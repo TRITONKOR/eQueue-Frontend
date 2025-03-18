@@ -1,4 +1,4 @@
-import GreetingPage from "../pages/GreetingPage";
+import GreetingPage from "../pages/GreetingPage/GreetingPage";
 
 export const GreetingLayout: React.FC = () => {
     return (
