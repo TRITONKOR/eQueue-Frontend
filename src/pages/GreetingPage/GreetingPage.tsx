@@ -1,7 +1,15 @@
+import { Button } from "@heroui/button";
 import React from "react";
+import { useNavigate } from "react-router";
 import "./greetingPage.scss";
 
 const GreetingPage: React.FC = () => {
+    const navigate = useNavigate();
+
+    const handleClick = () => {
+        navigate("/profile");
+    };
+
     return (
         <div className="container">
             <h1>Вас вітає Центр надання адміністративних послуг!</h1>
@@ -22,7 +30,9 @@ const GreetingPage: React.FC = () => {
                     слідкувати за викликом на моніторах електронної черги.
                 </p>
             </div>
-            <button className="button btn-primary">Заповнити анкету</button>
+            <Button color="primary" onPress={handleClick}>
+                Заповнити анкету
+            </Button>
         </div>
     );
 };

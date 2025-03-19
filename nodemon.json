@@ -1,6 +1,0 @@
-{
-    "watch": ["src"],
-    "ext": "js,ts,tsx,jsx,json,css",
-    "ignore": ["node_modules"],
-    "exec": "vite --host"
-}
