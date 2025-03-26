@@ -26,7 +26,7 @@ export const ServiceItem: React.FC<ServiceItemProps> = ({
 
     return (
         <Button
-            className="w-full text-lg text-center px-6 py-6 min-h-[100px] h-auto whitespace-normal break-words"
+            className="w-full text-base sm:text-xl text-center px-6 py-6 min-h-20 h-auto h-auto whitespace-normal break-words max-w-full"
             color="primary"
             onPress={handleClick}
         >

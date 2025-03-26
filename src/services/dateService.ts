@@ -10,13 +10,15 @@ interface PreRegTime {
     IsAllow: number;
 }
 
+const organizationGuid = import.meta.env.VITE_ORGANIZATION_GUID;
+
 export const fetchAvailableDates = async (
     serviceCenterId: number,
     serviceId: number
 ): Promise<string[]> => {
     try {
         const response = await axios.get(
-            `/api/QueueService.svc/json_pre_reg_https/GetDayList?organisationGuid={4c750754-aa83-410c-8a7f-55d71233380a}&serviceCenterId=${serviceCenterId}&serviceId=${serviceId}`
+            `/api/QueueService.svc/json_pre_reg_https/GetDayList?organisationGuid={${organizationGuid}}&serviceCenterId=${serviceCenterId}&serviceId=${serviceId}`
         );
 
         const data = response.data;
@@ -42,7 +44,7 @@ export const fetchAvailableTimes = async (
 ): Promise<string[]> => {
     try {
         const response = await axios.get(
-            `/api/QueueService.svc/json_pre_reg_https/GetTimeList?organisationGuid={4c750754-aa83-410c-8a7f-55d71233380a}&serviceCenterId=${serviceCenterId}&serviceId=${serviceId}&date=${date}`
+            `/api/QueueService.svc/json_pre_reg_https/GetTimeList?organisationGuid={${organizationGuid}}&serviceCenterId=${serviceCenterId}&serviceId=${serviceId}&date=${date}`
         );
 
         const data = response.data;
@@ -64,7 +66,6 @@ export const fetchAvailableTimes = async (
 export const formatDate = (datePart: string): string => {
     const timestamp = parseInt(datePart.match(/\d+/)?.[0] || "0", 10);
     const date = new Date(timestamp);
-    console.log(date);
     return date.toLocaleDateString("en-GB", { day: "numeric", month: "long" });
 };
 

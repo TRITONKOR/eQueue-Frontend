@@ -1,6 +1,6 @@
 import React, { createContext, ReactNode, useContext, useState } from "react";
 
-interface UserProfile {
+export interface UserProfile {
     lastName: string;
     firstName: string;
     middleName: string;

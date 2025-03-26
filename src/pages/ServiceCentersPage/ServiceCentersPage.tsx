@@ -1,11 +1,11 @@
 import { Button } from "@heroui/button";
+import { Input } from "@heroui/input";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ServiceCenterItem } from "../../components/ServiceCenterItem";
 import { useServiceCenter } from "../../context/ServiceCenterContext";
 import { useUser } from "../../context/UserContext";
-import "./serviceCentersPage.scss";
 
 interface ServiceCenter {
     BranchName: string;
@@ -16,17 +16,22 @@ interface ServiceCenter {
 
 export const ServiceCentersPage: React.FC = () => {
     const { userProfile } = useUser();
-    const [centers, setCenters] = useState<ServiceCenter[]>([]);
     const { setSelectedCenter } = useServiceCenter();
     const navigate = useNavigate();
 
+    const [centers, setCenters] = useState<ServiceCenter[]>([]);
+    const [searchQuery, setSearchQuery] = useState<string>("");
+    const organizationGuid = import.meta.env.VITE_ORGANIZATION_GUID;
+
     useEffect(() => {
-        console.log("rendered center");
-        console.log(userProfile);
+        if (userProfile.firstName === "") {
+            navigate("/profile");
+            return;
+        }
 
         axios
             .get(
-                `/api/QueueService.svc/json_pre_reg_https/getServiceCenterList?organisationGuid={4c750754-aa83-410c-8a7f-55d71233380a}`
+                `/api/QueueService.svc/json_pre_reg_https/getServiceCenterList?organisationGuid={${organizationGuid}}`
             )
             .then((response) => {
                 const data = response.data;
@@ -43,16 +48,32 @@ export const ServiceCentersPage: React.FC = () => {
             });
     }, []);
 
-    return (
-        <div className="container w-full flex flex-col items-center justify-center gap-6 p-4">
-            <h1 className="text-2xl font-bold text-center">Попередній запис</h1>
+    const filteredCenters = centers.filter((service) =>
+        service.ServiceCenterName.toLowerCase().includes(
+            searchQuery.toLowerCase()
+        )
+    );
 
-            <p className="text-center ">
+    return (
+        <div className="container flex flex-col items-center justify-center mx-auto p-6 bg-white shadow-lg rounded-lg max-w-full min-h-screen sm:min-h-full sm:max-w-4xl sm:my-auto">
+            <h1 className="h1-primary">Попередній запис</h1>
+
+            <p className="mb-5 text-2xl text-center">
                 Будь ласка, оберіть ЦНАП, або його територіальний підрозділ
             </p>
 
-            <div className="flex flex-col items-center w-full gap-4">
-                {centers.map((center: ServiceCenter) => (
+            <Input
+                type="text"
+                placeholder="Пошук сервісу..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full px-6 mb-6"
+                size="lg"
+                classNames={{ input: " text-lg" }}
+            />
+
+            <div className="flex flex-col overflow-auto max-h-[500px] items-center w-full gap-4 px-6">
+                {filteredCenters.map((center: ServiceCenter) => (
                     <ServiceCenterItem
                         key={center.ServiceCenterId}
                         serviceCenter={center}
@@ -62,7 +83,7 @@ export const ServiceCentersPage: React.FC = () => {
             </div>
 
             <Button
-                className="w-3/4 md:w-1/2 mt-6 min-h-20 text-lg"
+                className="btn-primary sm:w-auto"
                 color="primary"
                 onPress={() => navigate("/profile")}
             >

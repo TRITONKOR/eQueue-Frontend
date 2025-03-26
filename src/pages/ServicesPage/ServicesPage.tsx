@@ -1,10 +1,12 @@
 import { Button } from "@heroui/button";
+import { Input } from "@heroui/input";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ServiceItem } from "../../components/ServiceItem";
 import { useServiceCenter } from "../../context/ServiceCenterContext";
 import { useService } from "../../context/ServiceContext";
+import { useUser } from "../../context/UserContext";
 
 interface Service {
     Description: string;
@@ -14,21 +16,29 @@ interface Service {
 }
 
 export const ServicesPage: React.FC = () => {
+    const { userProfile } = useUser();
     const { selectedCenter } = useServiceCenter();
     const { setSelectedService } = useService();
     const [services, setServices] = useState<Service[]>([]);
+    const [searchQuery, setSearchQuery] = useState<string>("");
+
     const navigate = useNavigate();
 
+    const organizationGuid = import.meta.env.VITE_ORGANIZATION_GUID;
+
     useEffect(() => {
+        if (userProfile.firstName === "") {
+            navigate("/profile");
+            return;
+        }
+
         if (selectedCenter === null) {
             navigate("/serviceCenters");
         }
 
-        console.log("rendered services");
-
         axios
             .get(
-                `/api/QueueService.svc/json_pre_reg_https/GetServiceList?organisationGuid={4c750754-aa83-410c-8a7f-55d71233380a}&serviceCenterId=${selectedCenter?.ServiceCenterId}`
+                `/api/QueueService.svc/json_pre_reg_https/GetServiceList?organisationGuid={${organizationGuid}}&serviceCenterId=${selectedCenter?.ServiceCenterId}`
             )
             .then((response) => {
                 const data = response.data;
@@ -43,14 +53,32 @@ export const ServicesPage: React.FC = () => {
             });
     }, []);
 
+    const filteredServices = services.filter((service) =>
+        service.Description.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
     return (
-        <div className="container w-full gap-6 p-6">
-            <h1 className="text-2xl font-bold text-center">
+        <div className="container flex flex-col items-center justify-center mx-auto p-6 bg-white shadow-lg rounded-lg  sm:my-auto">
+            <h1 className="h1-primary">
                 Будь ласка, оберіть необхідну послугу
             </h1>
 
-            <div className="w-full h-[70vh] overflow-y-auto flex flex-wrap gap-5 px-6 justify-center">
-                {services.map((service: Service) => (
+            <p className="mb-5 text-lg sm:text-2xl text-center">
+                {selectedCenter?.ServiceCenterName}
+            </p>
+
+            <Input
+                type="text"
+                placeholder="Пошук сервісу..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full px-6 mb-6"
+                size="lg"
+                classNames={{ input: " text-lg" }}
+            />
+
+            <div className="flex flex-col overflow-auto max-h-[500px] max-w-xs sm:max-w-full gap-5 px-6 justify-center">
+                {filteredServices.map((service: Service) => (
                     <ServiceItem
                         key={service.ServiceId}
                         service={service}
@@ -60,7 +88,7 @@ export const ServicesPage: React.FC = () => {
             </div>
 
             <Button
-                className="w-3/4 lg:w-1/2 mt-6 min-h-20 text-xl"
+                className="btn-primary sm:w-auto"
                 color="primary"
                 onPress={() => navigate("/serviceCenters")}
             >

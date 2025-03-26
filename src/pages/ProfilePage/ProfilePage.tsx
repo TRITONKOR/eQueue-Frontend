@@ -10,7 +10,6 @@ export const ProfilePage: React.FC = () => {
     const { userProfile, setUserProfile } = useUser();
     const navigate = useNavigate();
 
-    // Ініціалізація стану форми з профілю користувача
     const [formData, setFormData] = useState({
         lastName: "",
         firstName: "",
@@ -18,46 +17,38 @@ export const ProfilePage: React.FC = () => {
         phone: "",
         email: "",
         companyName: "",
-        agreement: false, // Це значення не буде передаватися в контекст
+        agreement: false,
     });
 
-    // Оновлення стану форми при зміні профілю в контексті
     useEffect(() => {
-        if (userProfile) {
-            setFormData({
-                lastName: userProfile.lastName || "",
-                firstName: userProfile.firstName || "",
-                middleName: userProfile.middleName || "",
-                phone: userProfile.phone || "",
-                email: userProfile.email || "",
-                companyName: userProfile.companyName || "",
-                agreement: false, // Це значення не повинно ініціалізуватися з контексту
-            });
-        }
-    }, [userProfile]);
+        setFormData({
+            lastName: userProfile.lastName || "",
+            firstName: userProfile.firstName || "",
+            middleName: userProfile.middleName || "",
+            phone: userProfile.phone || "",
+            email: userProfile.email || "",
+            companyName: userProfile.companyName || "",
+            agreement: false,
+        });
+    }, []);
 
-    // Обробка зміни значень у формі
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value, type, checked } = e.target;
         const updatedValue = type === "checkbox" ? checked : value;
 
-        // Оновлення стану форми
         setFormData((prev) => ({
             ...prev,
             [name]: updatedValue,
         }));
 
-        // Оновлення профілю користувача в контексті (без зміни 'agreement')
         if (name !== "agreement") {
             setUserProfile({
                 ...userProfile,
                 [name]: updatedValue,
             });
-            console.log("User profile updated:", userProfile);
         }
     };
 
-    // Перевірка коректності форми
     const isFormValid =
         formData.lastName.trim() !== "" &&
         formData.firstName.trim() !== "" &&
@@ -66,14 +57,20 @@ export const ProfilePage: React.FC = () => {
         formData.agreement;
 
     return (
-        <div className="container">
-            <h1>Анкета відвідувача</h1>
-            <form>
-                <div className="form-group">
-                    <label htmlFor="lastName">Прізвище*</label>
+        <div className="container flex flex-col items-center justify-center mx-auto p-6 bg-white shadow-lg rounded-lg max-w-full sm:max-w-4xl sm:my-auto">
+            <h1 className="h1-primary">Анкета відвідувача</h1>
+            <form className="flex flex-col w-full sm:w-auto">
+                <div className="form-group mb-4">
+                    <label
+                        htmlFor="lastName"
+                        className="block text-sm sm:text-base mb-2"
+                    >
+                        Прізвище*
+                    </label>
                     <Input
                         id="lastName"
                         className="form-control"
+                        classNames={{ input: " text-lg" }}
                         isRequired
                         type="text"
                         name="lastName"
@@ -82,11 +79,17 @@ export const ProfilePage: React.FC = () => {
                         size="lg"
                     />
                 </div>
-                <div className="form-group">
-                    <label htmlFor="firstName">Ім'я*</label>
+                <div className="form-group mb-4">
+                    <label
+                        htmlFor="firstName"
+                        className="block text-sm sm:text-base mb-2"
+                    >
+                        Ім'я*
+                    </label>
                     <Input
                         id="firstName"
                         className="form-control"
+                        classNames={{ input: " text-lg" }}
                         isRequired
                         type="text"
                         name="firstName"
@@ -95,11 +98,17 @@ export const ProfilePage: React.FC = () => {
                         size="lg"
                     />
                 </div>
-                <div className="form-group">
-                    <label htmlFor="middleName">По батькові*</label>
+                <div className="form-group mb-4">
+                    <label
+                        htmlFor="middleName"
+                        className="block text-sm sm:text-base mb-2"
+                    >
+                        По батькові*
+                    </label>
                     <Input
                         id="middleName"
                         className="form-control"
+                        classNames={{ input: " text-lg" }}
                         isRequired
                         type="text"
                         name="middleName"
@@ -108,11 +117,17 @@ export const ProfilePage: React.FC = () => {
                         size="lg"
                     />
                 </div>
-                <div className="form-group">
-                    <label htmlFor="companyName">Назва юридичної особи</label>
+                <div className="form-group mb-4">
+                    <label
+                        htmlFor="companyName"
+                        className="block text-sm sm:text-base mb-2"
+                    >
+                        Назва юридичної особи
+                    </label>
                     <Input
                         id="companyName"
                         className="form-control"
+                        classNames={{ input: " text-lg" }}
                         type="text"
                         name="companyName"
                         onChange={handleChange}
@@ -120,12 +135,18 @@ export const ProfilePage: React.FC = () => {
                         size="lg"
                     />
                 </div>
-                <div className="form-group">
-                    <label htmlFor="phone">Номер телефону*</label>
+                <div className="form-group mb-4">
+                    <label
+                        htmlFor="phone"
+                        className="block text-sm sm:text-base mb-2"
+                    >
+                        Номер телефону*
+                    </label>
                     <Input
                         id="phone"
                         isRequired
                         className="form-control"
+                        classNames={{ input: " text-lg" }}
                         type="tel"
                         name="phone"
                         onChange={handleChange}
@@ -133,11 +154,17 @@ export const ProfilePage: React.FC = () => {
                         size="lg"
                     />
                 </div>
-                <div className="form-group">
-                    <label htmlFor="email">E-mail</label>
+                <div className="form-group mb-4">
+                    <label
+                        htmlFor="email"
+                        className="block text-sm sm:text-base mb-2"
+                    >
+                        E-mail
+                    </label>
                     <Input
                         id="email"
                         className="form-control"
+                        classNames={{ input: " text-lg" }}
                         type="email"
                         name="email"
                         onChange={handleChange}
@@ -146,32 +173,32 @@ export const ProfilePage: React.FC = () => {
                     />
                 </div>
 
-                <div className="form-group">
+                <div className="form-group mb-2">
                     <Checkbox
                         id="agreement"
                         name="agreement"
+                        classNames={{ label: "text-sm sm:text-lg" }}
                         isRequired
                         onChange={handleChange}
                         checked={formData.agreement}
-                    />
-                    <label htmlFor="agreement">
+                    >
                         Відповідно до ст. 11 Закону України «Про захист
                         персональних даних» надаю згоду на обробку та
                         використання моїх даних для здійснення повноважень,
                         пов'язаних із розглядом даного запиту
-                    </label>
+                    </Checkbox>
                 </div>
 
-                <div className="nav">
+                <div className="flex justify-center sm:gap-2 flex-wrap">
                     <Button
-                        className="w-3/4 md:w-1/2 mt-6 min-h-20 text-lg"
+                        className="btn-primary  sm:w-auto order-2 sm:order-1"
                         color="primary"
                         onPress={() => navigate("/")}
                     >
                         Повернутися назад
                     </Button>
                     <Button
-                        className="w-3/4 md:w-1/2 mt-6 min-h-20 text-lg"
+                        className="btn-primary  sm:w-auto order-1 sm:order-2"
                         color="primary"
                         isDisabled={!isFormValid}
                         onPress={() => navigate("/serviceCenters")}

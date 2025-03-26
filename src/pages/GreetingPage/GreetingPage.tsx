@@ -1,20 +1,21 @@
 import { Button } from "@heroui/button";
 import React from "react";
 import { useNavigate } from "react-router";
-import "./greetingPage.scss";
 
 const GreetingPage: React.FC = () => {
     const navigate = useNavigate();
 
     return (
-        <div className="container">
-            <h1>Вас вітає Центр надання адміністративних послуг!</h1>
-            <div>
-                <strong>
+        <div className="container mx-auto p-6 bg-white shadow-lg rounded-lg max-w-full sm:max-w-4xl my-2 sm:my-auto">
+            <h1 className="mb-5 text-3xl font-extrabold text-center text-blue-600 sm:text-3xl">
+                Вас вітає Центр надання адміністративних послуг!
+            </h1>
+            <div className="mb-6">
+                <strong className="text-lg sm:text-xl text-gray-700 block mb-4">
                     Шановний відвідувачу, даний сервіс дозволяє Вам здійснити
                     попередній запис на прийом до адміністратора ЦНАП.
                 </strong>
-                <p>
+                <p className="text-base sm:text-lg text-gray-600">
                     Просимо врахувати, що попередній запис у ЦНАП можна
                     здійснити лише один раз на одну послугу протягом робочого
                     дня і окремо на видачу документів. Після здійснення
@@ -26,13 +27,15 @@ const GreetingPage: React.FC = () => {
                     слідкувати за викликом на моніторах електронної черги.
                 </p>
             </div>
-            <Button
-                className="w-3/4 md:w-1/2 mt-6 min-h-20 text-lg"
-                color="primary"
-                onPress={() => navigate("/profile")}
-            >
-                Заповнити анкету
-            </Button>
+            <div className="flex w-full justify-center">
+                <Button
+                    className="btn-primary sm:w-auto"
+                    color="primary"
+                    onPress={() => navigate("/profile")}
+                >
+                    Заповнити анкету
+                </Button>
+            </div>
         </div>
     );
 };

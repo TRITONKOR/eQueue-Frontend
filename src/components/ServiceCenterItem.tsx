@@ -26,7 +26,7 @@ export const ServiceCenterItem: React.FC<ServiceCenterItemProps> = ({
 
     return (
         <Button
-            className="w-full text-lg text-center px-6 py-4 min-h-20 whitespace-normal"
+            className="w-full text-lg sm:text-xl text-center px-6 py-6 h-auto whitespace-normal break-words"
             color="primary"
             onPress={handleClick}
         >

@@ -25,8 +25,10 @@ export const RegistrationPage: React.FC = () => {
 
     const navigate = useNavigate();
 
+    const organizationGuid = import.meta.env.VITE_ORGANIZATION_GUID;
+
     useEffect(() => {
-        if (!userProfile) {
+        if (userProfile.firstName === "") {
             navigate("/profile");
             return;
         }
@@ -56,8 +58,6 @@ export const RegistrationPage: React.FC = () => {
             return;
         }
 
-        console.log("Selected date:", date);
-
         fetchAvailableTimes(
             selectedCenter.ServiceCenterId,
             selectedService.ServiceId,
@@ -78,12 +78,12 @@ export const RegistrationPage: React.FC = () => {
             !selectedTime ||
             !userProfile
         ) {
-            console.log("no");
             return;
         }
+
         axios
             .get(
-                `/api/QueueService.svc/json_pre_reg_https/RegCustomerEx?organisationGuid={4c750754-aa83-410c-8a7f-55d71233380a}&serviceCenterId=${
+                `/api/QueueService.svc/json_pre_reg_https/RegCustomerEx?organisationGuid={${organizationGuid}}&serviceCenterId=${
                     selectedCenter?.ServiceCenterId
                 }&serviceId=${selectedService?.ServiceId}&phone=${
                     userProfile.phone
@@ -109,18 +109,18 @@ export const RegistrationPage: React.FC = () => {
     const isButtonDisabled = !selectedDate || !selectedTime;
 
     return (
-        <div className="container w-full flex flex-col items-center justify-center gap-6 p-4">
-            <h1 className="text-2xl font-bold text-center">Попередній запис</h1>
+        <div className="container flex flex-col items-center justify-center mx-auto p-6 bg-white shadow-lg rounded-lg max-w-full min-h-screen sm:min-h-full sm:max-w-4xl sm:my-auto">
+            <h1 className="h1-primary">Попередній запис</h1>
 
-            <p className="text-center ">
+            <p className="mb-5 text-2xl text-center">
                 Будь ласка, оберіть бажаний час візиту
             </p>
 
-            <p className="text-center font-bold text-xl">
+            <p className="mb-5 text-2xl text-center font-bold">
                 {selectedService?.Description}
             </p>
 
-            <div className="flex items-center gap-4 w-full">
+            <div className="flex items-center gap-4 flex-wrap w-full">
                 <Select
                     items={availableDates.map((date) => ({ label: date }))}
                     label="Оберіть дату"
@@ -149,16 +149,16 @@ export const RegistrationPage: React.FC = () => {
                 </Select>
             </div>
 
-            <div className="w-full flex items-center gap-4">
+            <div className="flex justify-center sm:gap-2 flex-wrap">
                 <Button
-                    className="w-3/4 md:w-1/2 mt-6 min-h-20 text-lg"
+                    className="btn-primary sm:w-auto order-2 sm:order-1"
                     color="primary"
                     onPress={() => navigate("/servicesAndGroups")}
                 >
                     Повернутися назад
                 </Button>
                 <Button
-                    className="w-3/4 md:w-1/2 mt-6 min-h-20 text-lg"
+                    className="btn-primary sm:w-auto order-1 sm:order-2"
                     color="primary"
                     onPress={handleRegistration}
                     isDisabled={isButtonDisabled}
