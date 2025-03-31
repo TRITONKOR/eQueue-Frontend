@@ -57,7 +57,7 @@ export const ProfilePage: React.FC = () => {
         formData.agreement;
 
     return (
-        <div className="container flex flex-col items-center justify-center mx-auto p-6 bg-white shadow-lg rounded-lg max-w-full sm:max-w-4xl sm:my-auto">
+        <div className="container-primary">
             <h1 className="h1-primary">Анкета відвідувача</h1>
             <form className="flex flex-col w-full sm:w-auto">
                 <div className="form-group mb-4">
@@ -191,14 +191,14 @@ export const ProfilePage: React.FC = () => {
 
                 <div className="flex justify-center sm:gap-2 flex-wrap">
                     <Button
-                        className="btn-primary  sm:w-auto order-2 sm:order-1"
+                        className="btn-primary sm:w-auto order-2 sm:order-1"
                         color="primary"
                         onPress={() => navigate("/")}
                     >
                         Повернутися назад
                     </Button>
                     <Button
-                        className="btn-primary  sm:w-auto order-1 sm:order-2"
+                        className="btn-primary sm:w-auto order-1 sm:order-2"
                         color="primary"
                         isDisabled={!isFormValid}
                         onPress={() => navigate("/serviceCenters")}

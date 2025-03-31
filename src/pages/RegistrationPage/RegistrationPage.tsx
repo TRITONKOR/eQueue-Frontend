@@ -1,8 +1,10 @@
 import { Button } from "@heroui/button";
 import { Select, SelectItem } from "@heroui/select";
+import { Spinner } from "@heroui/spinner";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useReceipt } from "../../context/ReceiptContext";
 import { useServiceCenter } from "../../context/ServiceCenterContext";
 import { useService } from "../../context/ServiceContext";
 import { useUser } from "../../context/UserContext";
@@ -16,12 +18,15 @@ export const RegistrationPage: React.FC = () => {
     const { userProfile } = useUser();
     const { selectedService } = useService();
     const { selectedCenter } = useServiceCenter();
+    const { setReceipt } = useReceipt();
 
     const [availableDates, setAvailableDates] = useState<string[]>([]);
     const [availableTimes, setAvailableTimes] = useState<string[]>([]);
 
     const [selectedDate, setSelectedDate] = useState<string | null>(null);
     const [selectedTime, setSelectedTime] = useState<string | null>(null);
+
+    const [loading, setLoading] = useState<boolean>(true);
 
     const navigate = useNavigate();
 
@@ -38,13 +43,25 @@ export const RegistrationPage: React.FC = () => {
             return;
         }
 
-        fetchAvailableDates(
-            selectedCenter.ServiceCenterId,
-            selectedService.ServiceId
-        )
-            .then((dates) => setAvailableDates(dates))
-            .catch((error) => console.error("Error fetching dates:", error));
-    }, [selectedService, selectedCenter]);
+        setLoading(true);
+        try {
+            fetchAvailableDates(
+                selectedCenter.ServiceCenterId,
+                selectedService.ServiceId
+            )
+                .then((dates) => {
+                    setAvailableDates(dates);
+                    setLoading(false);
+                })
+                .catch((error) => {
+                    console.error("Error fetching dates:", error);
+                    setLoading(false);
+                });
+        } catch (error) {
+            console.error("Error fetching dates:", error);
+            setLoading(false);
+        }
+    }, [selectedService, selectedCenter, userProfile, navigate]);
 
     const handleDateChange = (keys: {
         anchorKey?: string;
@@ -96,7 +113,16 @@ export const RegistrationPage: React.FC = () => {
             .then((response) => {
                 const data = response.data;
                 if (data) {
-                    console.log(data.d);
+                    const { CustOrderGuid, CustReceiptNum } = response.data.d;
+
+                    setReceipt({
+                        CustOrderGuid,
+                        CustReceiptNum,
+                        selectedDate,
+                        selectedTime,
+                    });
+
+                    navigate("/receipt");
                 } else {
                     console.error("Registration failed");
                 }
@@ -109,63 +135,73 @@ export const RegistrationPage: React.FC = () => {
     const isButtonDisabled = !selectedDate || !selectedTime;
 
     return (
-        <div className="container flex flex-col items-center justify-center mx-auto p-6 bg-white shadow-lg rounded-lg max-w-full min-h-screen sm:min-h-full sm:max-w-4xl sm:my-auto">
-            <h1 className="h1-primary">Попередній запис</h1>
+        <>
+            {loading ? (
+                <Spinner size="lg" label="Завантаження дат" />
+            ) : (
+                <div className="container-primary">
+                    <h1 className="h1-primary">Попередній запис</h1>
 
-            <p className="mb-5 text-2xl text-center">
-                Будь ласка, оберіть бажаний час візиту
-            </p>
+                    <p className="mb-5 text-2xl text-center">
+                        Будь ласка, оберіть бажаний час візиту
+                    </p>
 
-            <p className="mb-5 text-2xl text-center font-bold">
-                {selectedService?.Description}
-            </p>
+                    <p className="mb-5 text-2xl text-center font-bold">
+                        {selectedService?.Description}
+                    </p>
 
-            <div className="flex items-center gap-4 flex-wrap w-full">
-                <Select
-                    items={availableDates.map((date) => ({ label: date }))}
-                    label="Оберіть дату"
-                    onSelectionChange={handleDateChange}
-                    size="lg"
-                >
-                    {(availableDate) => (
-                        <SelectItem key={availableDate.label}>
-                            {availableDate.label}
-                        </SelectItem>
-                    )}
-                </Select>
-                <Select
-                    items={availableTimes.map((time) => ({ label: time }))}
-                    label="Оберіть час"
-                    onSelectionChange={(keys) =>
-                        setSelectedTime(keys.currentKey as string)
-                    }
-                    size="lg"
-                >
-                    {(availableTime) => (
-                        <SelectItem key={availableTime.label}>
-                            {availableTime.label}
-                        </SelectItem>
-                    )}
-                </Select>
-            </div>
+                    <div className="flex  place-content-center gap-4 flex-wrap w-1/2 mx-auto">
+                        <Select
+                            items={availableDates.map((date) => ({
+                                label: date,
+                            }))}
+                            label="Оберіть дату"
+                            onSelectionChange={handleDateChange}
+                            size="lg"
+                        >
+                            {(availableDate) => (
+                                <SelectItem key={availableDate.label}>
+                                    {availableDate.label}
+                                </SelectItem>
+                            )}
+                        </Select>
+                        <Select
+                            items={availableTimes.map((time) => ({
+                                label: time,
+                            }))}
+                            label="Оберіть час"
+                            onSelectionChange={(keys) =>
+                                setSelectedTime(keys.currentKey as string)
+                            }
+                            size="lg"
+                        >
+                            {(availableTime) => (
+                                <SelectItem key={availableTime.label}>
+                                    {availableTime.label}
+                                </SelectItem>
+                            )}
+                        </Select>
+                    </div>
 
-            <div className="flex justify-center sm:gap-2 flex-wrap">
-                <Button
-                    className="btn-primary sm:w-auto order-2 sm:order-1"
-                    color="primary"
-                    onPress={() => navigate("/servicesAndGroups")}
-                >
-                    Повернутися назад
-                </Button>
-                <Button
-                    className="btn-primary sm:w-auto order-1 sm:order-2"
-                    color="primary"
-                    onPress={handleRegistration}
-                    isDisabled={isButtonDisabled}
-                >
-                    Зареєструватись
-                </Button>
-            </div>
-        </div>
+                    <div className="flex justify-center sm:gap-2 flex-wrap">
+                        <Button
+                            className="btn-primary order-2 sm:order-1"
+                            color="primary"
+                            onPress={() => navigate("/servicesAndGroups")}
+                        >
+                            Повернутися назад
+                        </Button>
+                        <Button
+                            className="btn-primary sm:w-auto order-1 sm:order-2"
+                            color="primary"
+                            onPress={handleRegistration}
+                            isDisabled={isButtonDisabled}
+                        >
+                            Зареєструватись
+                        </Button>
+                    </div>
+                </div>
+            )}
+        </>
     );
 };

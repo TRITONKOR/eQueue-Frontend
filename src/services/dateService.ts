@@ -43,8 +43,9 @@ export const fetchAvailableTimes = async (
     date: string
 ): Promise<string[]> => {
     try {
+        const formattedDate = reformatDate(date); // Перетворюємо дату у правильний формат перед запитом
         const response = await axios.get(
-            `/api/QueueService.svc/json_pre_reg_https/GetTimeList?organisationGuid={${organizationGuid}}&serviceCenterId=${serviceCenterId}&serviceId=${serviceId}&date=${date}`
+            `/api/QueueService.svc/json_pre_reg_https/GetTimeList?organisationGuid={${organizationGuid}}&serviceCenterId=${serviceCenterId}&serviceId=${serviceId}&date=${formattedDate}`
         );
 
         const data = response.data;
@@ -66,14 +67,16 @@ export const fetchAvailableTimes = async (
 export const formatDate = (datePart: string): string => {
     const timestamp = parseInt(datePart.match(/\d+/)?.[0] || "0", 10);
     const date = new Date(timestamp);
-    return date.toLocaleDateString("en-GB", { day: "numeric", month: "long" });
+
+    return date.toLocaleDateString("uk-UA", { day: "numeric", month: "long" });
 };
 
 export const parseTime = (isoTime: string): string => {
-    const match = isoTime.match(/PT(\d+)H(\d+)M/);
+    const match = isoTime.match(/PT(?:(\d+)H)?(?:(\d+)M)?/);
     if (match) {
-        const [, hours, minutes] = match;
-        return `${hours.padStart(2, "0")}:${minutes.padStart(2, "0")}`;
+        const hours = match[1] ? match[1].padStart(2, "0") : "00";
+        const minutes = match[2] ? match[2].padStart(2, "0") : "00";
+        return `${hours}:${minutes}`;
     }
     return "Invalid time";
 };
@@ -81,35 +84,31 @@ export const parseTime = (isoTime: string): string => {
 export const reformatDate = (formattedDate: string): string => {
     const [day, month] = formattedDate.split(" ");
 
-    const monthNames: { [key: string]: number } = {
-        January: 1,
-        February: 2,
-        March: 3,
-        April: 4,
-        May: 5,
-        June: 6,
-        July: 7,
-        August: 8,
-        September: 9,
-        October: 10,
-        November: 11,
-        December: 12,
+    const monthMap: { [key: string]: number } = {
+        січня: 0,
+        лютого: 1,
+        березня: 2,
+        квітня: 3,
+        травня: 4,
+        червня: 5,
+        липня: 6,
+        серпня: 7,
+        вересня: 8,
+        жовтня: 9,
+        листопада: 10,
+        грудня: 11,
     };
 
-    const monthNumber = monthNames[month];
+    const monthIndex = monthMap[month];
 
-    if (!monthNumber) {
+    if (monthIndex === undefined) {
         throw new Error("Invalid month name");
     }
 
     const currentYear = new Date().getFullYear();
-    const date = new Date(
-        currentYear,
-        monthNumber - 1,
-        parseInt(day, 10),
-        12,
-        0
-    );
+    const date = new Date(currentYear, monthIndex, parseInt(day, 10));
 
-    return date.toISOString().split("T")[0];
+    return `${date.getFullYear()}-${(date.getMonth() + 1)
+        .toString()
+        .padStart(2, "0")}-${date.getDate().toString().padStart(2, "0")}`;
 };
