@@ -9,6 +9,7 @@ import { ReceiptPage } from "./pages/ReceiptPage/ReceiptPage";
 import { RegistrationPage } from "./pages/RegistrationPage/RegistrationPage";
 import { ServiceCentersPage } from "./pages/ServiceCentersPage/ServiceCentersPage";
 import { ServicesPage } from "./pages/ServicesPage/ServicesPage";
+
 function App() {
     return (
         <UserProvider>

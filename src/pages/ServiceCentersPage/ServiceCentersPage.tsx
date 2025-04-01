@@ -25,6 +25,8 @@ export const ServiceCentersPage: React.FC = () => {
     const organizationGuid = import.meta.env.VITE_ORGANIZATION_GUID;
     const [loading, setLoading] = useState<boolean>(true);
 
+    const allowedServiceCenterIds = [1, 2];
+
     useEffect(() => {
         if (userProfile.firstName === "") {
             navigate("/profile");
@@ -40,7 +42,13 @@ export const ServiceCentersPage: React.FC = () => {
                 .then((response) => {
                     const data = response.data;
                     if (data && Array.isArray(data.d)) {
-                        setCenters(data.d);
+                        const filteredCenters = data.d.filter(
+                            (center: ServiceCenter) =>
+                                allowedServiceCenterIds.includes(
+                                    center.ServiceCenterId
+                                )
+                        );
+                        setCenters(filteredCenters);
                     } else {
                         console.error(
                             "ServiceCenters not found or 'd' is not an array"

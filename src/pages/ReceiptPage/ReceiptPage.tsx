@@ -7,6 +7,8 @@ import { useServiceCenter } from "../../context/ServiceCenterContext";
 import { useService } from "../../context/ServiceContext";
 import { useUser } from "../../context/UserContext";
 
+import html2canvas from "html2canvas";
+
 export const ReceiptPage: React.FC = () => {
     const navigate = useNavigate();
     const { userProfile } = useUser();
@@ -52,39 +54,69 @@ export const ReceiptPage: React.FC = () => {
         userProfile,
     ]);
 
-    const printHtmlReceipt = (html: string) => {
-        if (!html) return;
-
-        const iframe = document.createElement("iframe");
-        iframe.style.position = "absolute";
-        iframe.style.width = "0px";
-        iframe.style.height = "0px";
-        iframe.style.border = "none";
-        document.body.appendChild(iframe);
-
-        const doc = iframe.contentDocument || iframe.contentWindow?.document;
-        if (doc) {
-            doc.open();
-            doc.write(`
-                <html>
-                    <head>
-                        <title>Чек реєстрації</title>
-                        <style>
-                            body { font-family: Arial, sans-serif; padding: 20px; }
-                        </style>
-                    </head>
-                    <body>${html}</body>
-                </html>
-            `);
-            doc.close();
-
-            iframe.contentWindow?.focus();
-            iframe.contentWindow?.print();
+    const downloadImageReceipt = () => {
+        const receiptElement = document.getElementById("receipt-content");
+        if (!receiptElement) {
+            console.error("Receipt element not found");
+            return;
         }
 
-        setTimeout(() => {
-            document.body.removeChild(iframe);
-        }, 1000);
+        const originalStyles = {
+            width: receiptElement.style.width,
+            overflow: receiptElement.style.overflow,
+            paddingBottom: receiptElement.style.paddingBottom,
+        };
+
+        receiptElement.style.width = "400px";
+        receiptElement.style.overflow = "visible";
+        receiptElement.style.paddingBottom = "20px";
+
+        const problematicElements = receiptElement.querySelectorAll(
+            "hr, .divider, .border"
+        );
+        problematicElements.forEach((el) => {
+            const element = el as HTMLElement;
+            element.style.margin = "10px 0";
+            element.style.display = "block";
+            element.style.position = "static";
+        });
+
+        html2canvas(receiptElement, {
+            scale: 2,
+            useCORS: true,
+            scrollY: 0,
+            windowHeight: receiptElement.scrollHeight,
+            width: 400,
+            height: receiptElement.scrollHeight,
+            logging: true,
+        })
+            .then((canvas) => {
+                receiptElement.style.width = originalStyles.width;
+                receiptElement.style.overflow = originalStyles.overflow;
+                receiptElement.style.paddingBottom =
+                    originalStyles.paddingBottom;
+
+                problematicElements.forEach((el) => {
+                    const element = el as HTMLElement;
+                    element.style.margin = "";
+                    element.style.display = "";
+                    element.style.position = "";
+                });
+
+                const imgData = canvas.toDataURL("image/png");
+
+                const link = document.createElement("a");
+                link.href = imgData;
+                link.download = "Чек_реєстрації.png";
+                link.click();
+            })
+            .catch((error) => {
+                console.error("Error generating receipt image:", error);
+                receiptElement.style.width = originalStyles.width;
+                receiptElement.style.overflow = originalStyles.overflow;
+                receiptElement.style.paddingBottom =
+                    originalStyles.paddingBottom;
+            });
     };
 
     return (
@@ -133,6 +165,12 @@ export const ReceiptPage: React.FC = () => {
                     </ul>
                 </span>
 
+                <div
+                    id="receipt-content"
+                    className="mt-8"
+                    dangerouslySetInnerHTML={{ __html: htmlReceipt }}
+                ></div>
+
                 <div className="flex justify-center sm:gap-2 flex-wrap">
                     <Button
                         className="btn-primary order-2 sm:order-1"
@@ -144,9 +182,9 @@ export const ReceiptPage: React.FC = () => {
                     <Button
                         className="btn-primary order-1 sm:order-2"
                         color="primary"
-                        onPress={() => printHtmlReceipt(htmlReceipt)}
+                        onPress={downloadImageReceipt}
                     >
-                        🖨️ Друкувати чек
+                        📥 Завантажити чек
                     </Button>
                 </div>
             </div>
