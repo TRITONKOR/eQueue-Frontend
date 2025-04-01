@@ -39,28 +39,46 @@ export const ServicesPage: React.FC = () => {
             navigate("/serviceCenters");
         }
 
+        const cacheKey = `serviceCache_${selectedCenter?.ServiceCenterId}`;
+        const cachedData = localStorage.getItem(cacheKey);
+        if (cachedData) {
+            const parsedData = JSON.parse(cachedData);
+            if (parsedData.expiry > Date.now()) {
+                setServices(parsedData.data);
+                setLoading(false);
+                return;
+            }
+        }
+        fetchServices(cacheKey);
+    }, [navigate, organizationGuid, selectedCenter, userProfile.firstName]);
+
+    const fetchServices = async (cacheKey: string) => {
         setLoading(true);
         try {
-            axios
-                .get(
-                    `/api/QueueService.svc/json_pre_reg_https/GetServiceList?organisationGuid={${organizationGuid}}&serviceCenterId=${selectedCenter?.ServiceCenterId}`
-                )
-                .then((response) => {
-                    const data = response.data;
-                    if (data && Array.isArray(data.d)) {
-                        setServices(data.d);
-                    } else {
-                        console.error(
-                            "Services not found or 'd' is not an array"
-                        );
-                    }
-                    setLoading(false);
-                });
+            const response = await axios.get(
+                `/api/QueueService.svc/json_pre_reg_https/GetServiceList?organisationGuid={${organizationGuid}}&serviceCenterId=${selectedCenter?.ServiceCenterId}`
+            );
+            const data = response.data;
+            if (data && Array.isArray(data.d)) {
+                setServices(data.d);
+                localStorage.setItem(
+                    cacheKey,
+                    JSON.stringify({
+                        data: data.d,
+                        expiry: Date.now() + 900000, // 15 minutes
+                    })
+                );
+            } else {
+                console.error(
+                    "ServiceCenters not found or 'd' is not an array"
+                );
+            }
         } catch (error) {
             console.error("Error fetching services:", error);
+        } finally {
             setLoading(false);
         }
-    }, [navigate, organizationGuid, selectedCenter, userProfile.firstName]);
+    };
 
     const filteredServices = services.filter((service) =>
         service.Description.toLowerCase().includes(searchQuery.toLowerCase())

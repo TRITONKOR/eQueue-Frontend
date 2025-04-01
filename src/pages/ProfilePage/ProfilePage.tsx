@@ -57,127 +57,151 @@ export const ProfilePage: React.FC = () => {
         formData.agreement;
 
     return (
-        <div className="container-primary">
-            <h1 className="h1-primary">Анкета відвідувача</h1>
-            <form className="flex flex-col w-full sm:w-auto">
-                <div className="form-group mb-4">
-                    <label
-                        htmlFor="lastName"
-                        className="block text-sm sm:text-base mb-2"
-                    >
-                        Прізвище*
-                    </label>
-                    <Input
-                        id="lastName"
-                        className="form-control"
-                        classNames={{ input: " text-lg" }}
-                        isRequired
-                        type="text"
-                        name="lastName"
-                        onChange={handleChange}
-                        value={formData.lastName}
-                        size="lg"
-                    />
-                </div>
-                <div className="form-group mb-4">
-                    <label
-                        htmlFor="firstName"
-                        className="block text-sm sm:text-base mb-2"
-                    >
-                        Ім'я*
-                    </label>
-                    <Input
-                        id="firstName"
-                        className="form-control"
-                        classNames={{ input: " text-lg" }}
-                        isRequired
-                        type="text"
-                        name="firstName"
-                        onChange={handleChange}
-                        value={formData.firstName}
-                        size="lg"
-                    />
-                </div>
-                <div className="form-group mb-4">
-                    <label
-                        htmlFor="middleName"
-                        className="block text-sm sm:text-base mb-2"
-                    >
-                        По батькові*
-                    </label>
-                    <Input
-                        id="middleName"
-                        className="form-control"
-                        classNames={{ input: " text-lg" }}
-                        isRequired
-                        type="text"
-                        name="middleName"
-                        onChange={handleChange}
-                        value={formData.middleName}
-                        size="lg"
-                    />
-                </div>
-                <div className="form-group mb-4">
-                    <label
-                        htmlFor="companyName"
-                        className="block text-sm sm:text-base mb-2"
-                    >
-                        Назва юридичної особи
-                    </label>
-                    <Input
-                        id="companyName"
-                        className="form-control"
-                        classNames={{ input: " text-lg" }}
-                        type="text"
-                        name="companyName"
-                        onChange={handleChange}
-                        value={formData.companyName}
-                        size="lg"
-                    />
-                </div>
-                <div className="form-group mb-4">
-                    <label
-                        htmlFor="phone"
-                        className="block text-sm sm:text-base mb-2"
-                    >
-                        Номер телефону*
-                    </label>
-                    <Input
-                        id="phone"
-                        isRequired
-                        className="form-control"
-                        classNames={{ input: " text-lg" }}
-                        type="tel"
-                        name="phone"
-                        onChange={handleChange}
-                        value={formData.phone}
-                        size="lg"
-                    />
-                </div>
-                <div className="form-group mb-4">
-                    <label
-                        htmlFor="email"
-                        className="block text-sm sm:text-base mb-2"
-                    >
-                        E-mail
-                    </label>
-                    <Input
-                        id="email"
-                        className="form-control"
-                        classNames={{ input: " text-lg" }}
-                        type="email"
-                        name="email"
-                        onChange={handleChange}
-                        value={formData.email}
-                        size="lg"
-                    />
+        <div className="container-primary max-w-3xl mx-auto px-4 sm:px-6 py-8">
+            <div className="text-center mb-10">
+                <h1 className="h1-primary mb-4">Анкета відвідувача</h1>
+                <p className="text-gray-600">
+                    Будь ласка, заповніть обов'язкові поля (позначені{" "}
+                    <span className="text-red-500">*</span>) для продовження
+                </p>
+            </div>
+
+            <form className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-6">
+                        <div className="form-group">
+                            <label htmlFor="lastName" className="form-label">
+                                Прізвище<span className="text-red-500">*</span>
+                            </label>
+                            <Input
+                                id="lastName"
+                                className="form-input"
+                                classNames={{
+                                    input: "form-input__field",
+                                    inputWrapper: "form-input__wrapper",
+                                }}
+                                isRequired
+                                type="text"
+                                name="lastName"
+                                onChange={handleChange}
+                                value={formData.lastName}
+                                size="lg"
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label htmlFor="firstName" className="form-label">
+                                Ім'я<span className="text-red-500">*</span>
+                            </label>
+                            <Input
+                                id="firstName"
+                                className="form-input"
+                                classNames={{
+                                    input: "form-input__field",
+                                    inputWrapper: "form-input__wrapper",
+                                }}
+                                isRequired
+                                type="text"
+                                name="firstName"
+                                onChange={handleChange}
+                                value={formData.firstName}
+                                size="lg"
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label htmlFor="middleName" className="form-label">
+                                По батькові
+                                <span className="text-red-500">*</span>
+                            </label>
+                            <Input
+                                id="middleName"
+                                className="form-input"
+                                classNames={{
+                                    input: "form-input__field",
+                                    inputWrapper: "form-input__wrapper",
+                                }}
+                                isRequired
+                                type="text"
+                                name="middleName"
+                                onChange={handleChange}
+                                value={formData.middleName}
+                                size="lg"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="space-y-6">
+                        <div className="form-group">
+                            <label htmlFor="phone" className="form-label">
+                                Номер телефону
+                                <span className="text-red-500">*</span>
+                            </label>
+                            <Input
+                                id="phone"
+                                className="form-input"
+                                classNames={{
+                                    input: "form-input__field",
+                                    inputWrapper: "form-input__wrapper",
+                                }}
+                                isRequired
+                                type="tel"
+                                name="phone"
+                                onChange={handleChange}
+                                value={formData.phone}
+                                size="lg"
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label htmlFor="email" className="form-label">
+                                E-mail
+                            </label>
+                            <Input
+                                id="email"
+                                className="form-input"
+                                classNames={{
+                                    input: "form-input__field",
+                                    inputWrapper: "form-input__wrapper",
+                                }}
+                                type="email"
+                                name="email"
+                                onChange={handleChange}
+                                value={formData.email}
+                                size="lg"
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label htmlFor="companyName" className="form-label">
+                                Назва юридичної особи
+                            </label>
+                            <Input
+                                id="companyName"
+                                className="form-input"
+                                classNames={{
+                                    input: "form-input__field",
+                                    inputWrapper: "form-input__wrapper",
+                                }}
+                                type="text"
+                                name="companyName"
+                                onChange={handleChange}
+                                value={formData.companyName}
+                                size="lg"
+                            />
+                        </div>
+                    </div>
                 </div>
 
-                <div className="form-group mb-2">
+                <div className="bg-blue-50 rounded-lg p-6 border border-blue-100 mt-6">
                     <Checkbox
                         id="agreement"
                         name="agreement"
-                        classNames={{ label: "text-sm sm:text-lg" }}
+                        classNames={{
+                            base: "items-start",
+                            wrapper: "mt-1",
+                            label: "text-sm sm:text-base text-gray-700",
+                        }}
                         isRequired
                         onChange={handleChange}
                         checked={formData.agreement}
@@ -189,21 +213,21 @@ export const ProfilePage: React.FC = () => {
                     </Checkbox>
                 </div>
 
-                <div className="flex justify-center sm:gap-2 flex-wrap">
+                <div className="flex flex-col sm:flex-row justify-center gap-4 mt-10">
                     <Button
-                        className="btn-primary sm:w-auto order-2 sm:order-1"
+                        className="btn-primary px-8 py-3 order-2 sm:order-1"
                         color="primary"
                         onPress={() => navigate("/")}
                     >
-                        Повернутися назад
+                        ← Повернутися назад
                     </Button>
                     <Button
-                        className="btn-primary sm:w-auto order-1 sm:order-2"
+                        className="btn-primary px-8 py-3 order-1 sm:order-2"
                         color="primary"
                         isDisabled={!isFormValid}
                         onPress={() => navigate("/serviceCenters")}
                     >
-                        Продовжити
+                        Продовжити →
                     </Button>
                 </div>
             </form>

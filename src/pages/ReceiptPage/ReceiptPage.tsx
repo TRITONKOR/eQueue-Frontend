@@ -121,8 +121,8 @@ export const ReceiptPage: React.FC = () => {
 
     return (
         <div className="container-primary">
-            <div className="p-8 text-center">
-                <h1 className="text-2xl font-semibold text-gray-800">
+            <div className="p-8">
+                <h1 className="text-2xl font-semibold text-gray-800 text-center mb-8">
                     Вітаємо з успішною реєстрацією на прийом до адміністратора
                     м. Ужгород, з питання
                     <span className="text-blue-600">
@@ -132,50 +132,95 @@ export const ReceiptPage: React.FC = () => {
                     !
                 </h1>
 
-                <div className="mt-8 sm:text-lg text-base text-gray-700 flex align-center justify-center">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:text-left text-center w-full sm:w-1/2 mx-auto">
-                        <p className="font-medium">📅 Дата прийому:</p>
-                        <p className="font-bold">{receipt?.selectedDate}</p>
+                <div className="flex flex-col lg:flex-row gap-8">
+                    <div className="lg:w-1/2">
+                        <div className="bg-white p-6 rounded-lg shadow-md">
+                            <h2 className="text-xl font-bold mb-4 text-blue-600">
+                                Деталі реєстрації
+                            </h2>
 
-                        <p className="font-medium">⏰ Час:</p>
-                        <p className="font-bold">{receipt?.selectedTime}</p>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                                <div>
+                                    <p className="font-medium">
+                                        📅 Дата прийому:{" "}
+                                        <span className="font-bold text-lg">
+                                            {receipt?.selectedDate}
+                                        </span>
+                                    </p>
+                                </div>
+                                <div>
+                                    <p className="font-medium">
+                                        ⏰ Час:{" "}
+                                        <span className="font-bold text-lg">
+                                            {receipt?.selectedTime}
+                                        </span>
+                                    </p>
+                                </div>
+                                <div>
+                                    <p className="font-medium">
+                                        🔢 Номер у черзі:{" "}
+                                        <span className="font-bold text-lg">
+                                            {receipt?.CustReceiptNum}
+                                        </span>
+                                    </p>
+                                </div>
+                                <div>
+                                    <p className="font-medium">
+                                        📍 Центр обслуговування:
+                                    </p>
+                                    <p className="font-bold">
+                                        {selectedCenter?.ServiceCenterName}
+                                    </p>
+                                </div>
+                            </div>
 
-                        <p className="font-medium">🔢 Номер у черзі:</p>
-                        <p className="text-xl font-bold text-blue-600">
-                            {receipt?.CustReceiptNum}
-                        </p>
+                            <div className="bg-red-100 p-4 rounded-md">
+                                <h3 className="font-bold text-red-600 mb-2">
+                                    ⚠️ Увага!
+                                </h3>
+                                <ul className="list-disc list-inside space-y-2">
+                                    <li>
+                                        Просимо своєчасно прибути до центру, у
+                                        разі запізнення ваш чек буде анульовано!
+                                    </li>
+                                    <li>
+                                        Один запис у черзі надає можливість
+                                        отримання тільки однієї послуги.
+                                    </li>
+                                    <li>
+                                        Запис до електронної черги є
+                                        індивідуальним, передача запису третім
+                                        особам не допускається.
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="lg:w-1/2">
+                        <div className="bg-white p-6 rounded-lg shadow-md sticky top-4">
+                            <h2 className="text-xl font-bold mb-4 text-blue-600">
+                                Ваш чек
+                            </h2>
+                            <div
+                                id="receipt-content"
+                                className="receipt-container"
+                                dangerouslySetInnerHTML={{
+                                    __html: htmlReceipt,
+                                }}
+                            />
+                        </div>
                     </div>
                 </div>
 
-                <span className="mt-6 bg-red-100 p-4 rounded-md text-left sm:text-lg text-base inline-block">
-                    <h2 className="font-bold text-red-600">⚠️ Увага!</h2>
-                    <ul className="list-disc list-inside text-gray-700">
-                        <li>
-                            Просимо своєчасно прибути до центру, у разі
-                            запізнення ваш чек буде анульовано!
-                        </li>
-                        <li>
-                            Один запис у черзі надає можливість отримання тільки
-                            однієї послуги.
-                        </li>
-                        <li>
-                            Запис до електронної черги є індивідуальним,
-                            передача запису третім особам не допускається.
-                        </li>
-                    </ul>
-                </span>
-
-                <div
-                    id="receipt-content"
-                    className="mt-8"
-                    dangerouslySetInnerHTML={{ __html: htmlReceipt }}
-                ></div>
-
-                <div className="flex justify-center sm:gap-2 flex-wrap">
+                <div className="flex justify-center flex-wrap sm:gap-2 mt-6">
                     <Button
                         className="btn-primary order-2 sm:order-1"
                         color="primary"
-                        onPress={() => navigate("/servicesAndGroups")}
+                        onPress={() =>
+                            (window.location.href =
+                                "https://rada-uzhgorod.gov.ua/about-city")
+                        }
                     >
                         Завершити
                     </Button>

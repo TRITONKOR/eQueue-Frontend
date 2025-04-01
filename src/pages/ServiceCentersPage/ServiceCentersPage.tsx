@@ -15,6 +15,9 @@ interface ServiceCenter {
     LocationName: string;
 }
 
+const allowedServiceCenterIds = [1, 2];
+const CACHE_KEY = "serviceCentersCache";
+
 export const ServiceCentersPage: React.FC = () => {
     const { userProfile } = useUser();
     const { setSelectedCenter } = useServiceCenter();
@@ -25,42 +28,57 @@ export const ServiceCentersPage: React.FC = () => {
     const organizationGuid = import.meta.env.VITE_ORGANIZATION_GUID;
     const [loading, setLoading] = useState<boolean>(true);
 
-    const allowedServiceCenterIds = [1, 2];
-
     useEffect(() => {
         if (userProfile.firstName === "") {
             navigate("/profile");
             return;
         }
 
+        const cachedData = localStorage.getItem(CACHE_KEY);
+        if (cachedData) {
+            const parsedData = JSON.parse(cachedData);
+            if (parsedData.expiry > Date.now()) {
+                setCenters(parsedData.data);
+                setLoading(false);
+                return;
+            }
+        }
+
+        fetchServiceCenters();
+    }, [navigate, organizationGuid, userProfile.firstName]);
+
+    const fetchServiceCenters = async () => {
         setLoading(true);
         try {
-            axios
-                .get(
-                    `/api/QueueService.svc/json_pre_reg_https/getServiceCenterList?organisationGuid={${organizationGuid}}`
-                )
-                .then((response) => {
-                    const data = response.data;
-                    if (data && Array.isArray(data.d)) {
-                        const filteredCenters = data.d.filter(
-                            (center: ServiceCenter) =>
-                                allowedServiceCenterIds.includes(
-                                    center.ServiceCenterId
-                                )
-                        );
-                        setCenters(filteredCenters);
-                    } else {
-                        console.error(
-                            "ServiceCenters not found or 'd' is not an array"
-                        );
-                    }
-                    setLoading(false);
-                });
+            const response = await axios.get(
+                `/api/QueueService.svc/json_pre_reg_https/getServiceCenterList?organisationGuid={${organizationGuid}}`
+            );
+
+            const data = response.data;
+            if (data && Array.isArray(data.d)) {
+                const filteredCenters = data.d.filter((center: ServiceCenter) =>
+                    allowedServiceCenterIds.includes(center.ServiceCenterId)
+                );
+
+                setCenters(filteredCenters);
+                localStorage.setItem(
+                    CACHE_KEY,
+                    JSON.stringify({
+                        data: filteredCenters,
+                        expiry: Date.now() + 900000, // 15 minutes
+                    })
+                );
+            } else {
+                console.error(
+                    "ServiceCenters not found or 'd' is not an array"
+                );
+            }
         } catch (error) {
             console.error("Error fetching service centers:", error);
+        } finally {
             setLoading(false);
         }
-    }, [navigate, organizationGuid, userProfile.firstName]);
+    };
 
     const filteredCenters = centers.filter((service) =>
         service.ServiceCenterName.toLowerCase().includes(
