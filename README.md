@@ -1,54 +1,85 @@
-# React + TypeScript + Vite
+# eQueue
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+eQueue is a web application designed to streamline queue management and improve user experience. This project is built using modern web technologies.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- User-friendly interface for managing services and profiles.
+- Integration with external APIs for data handling.
+- Responsive design for optimal usability on various devices.
 
-## Expanding the ESLint configuration
+## Technologies Used
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **Frontend**: React, TypeScript, Vite
+- **Styling**: Tailwind CSS, SCSS
+- **Routing**: React Router
+- **State Management**: React Context API
+- **UI Components**: HeroUI
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+## Getting Started
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Follow these instructions to set up and run the project locally.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Prerequisites
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+Ensure you have the following installed:
+
+- [Node.js](https://nodejs.org/) (v16 or later)
+- [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/)
+
+### Installation
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/your-username/eQueue.git
+   cd eQueue
+
+2. Install dependencies:
+
+   ```bash
+
+   npm install
+
+3. Set up environment variables:
+    Create a .env file in the root directory and add the following:
+
+   ```bash
+
+   VITE_API_URL=https://elreg.rada-uzhgorod.gov.ua
+   VITE_ORGANIZATION_GUID=4c750754-aa83-410c-8a7f-55d71233380a
+
+### Running the Application
+
+Start the development server:
+
+   ```bash
+   npm run dev
+   ```
+The application will be available at http://localhost:5173.
+
+### Building for Production
+
+To build the application for production:
+
+   ```bash
+   npm run build
+   ```
+The production-ready files will be in the dist directory.
+
+##Folder Structure
+
+  ```bash
+  eQueue/
+├── src/
+│   ├── components/       # Reusable components
+│   ├── context/          # Context API for state management
+│   ├── pages/            # Application pages
+│   ├── styles/           # Global styles and SCSS files
+│   ├── App.tsx           # Main application component
+│   └── main.tsx          # Entry point
+├── public/               # Static assets
+├── .env                  # Environment variables
+├── [package.json](http://_vscodecontentref_/1)          # Project configuration
+└── [README.md](http://_vscodecontentref_/2)             # Project documentation
 ```
