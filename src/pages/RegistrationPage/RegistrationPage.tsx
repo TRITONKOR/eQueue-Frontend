@@ -67,13 +67,13 @@ export const RegistrationPage: React.FC = () => {
         anchorKey?: string;
         currentKey?: string;
     }) => {
-        const date = keys.currentKey as string;
-        setSelectedDate(date);
-
         if (!selectedService || !selectedCenter) {
             navigate("/servicesAndGroups");
             return;
         }
+
+        const date = keys.currentKey as string;
+        setSelectedDate(date);
 
         fetchAvailableTimes(
             selectedCenter.ServiceCenterId,
@@ -88,15 +88,7 @@ export const RegistrationPage: React.FC = () => {
     };
 
     const handleRegistration = () => {
-        if (
-            !selectedCenter ||
-            !selectedService ||
-            !selectedDate ||
-            !selectedTime ||
-            !userProfile
-        ) {
-            return;
-        }
+        if (!selectedDate || !selectedTime) return;
 
         axios
             .get(
@@ -111,21 +103,14 @@ export const RegistrationPage: React.FC = () => {
                 )} ${selectedTime}:00`
             )
             .then((response) => {
-                const data = response.data;
-                if (data) {
-                    const { CustOrderGuid, CustReceiptNum } = response.data.d;
-
-                    setReceipt({
-                        CustOrderGuid,
-                        CustReceiptNum,
-                        selectedDate,
-                        selectedTime,
-                    });
-
-                    navigate("/receipt");
-                } else {
-                    console.error("Registration failed");
-                }
+                const { CustOrderGuid, CustReceiptNum } = response.data.d;
+                setReceipt({
+                    CustOrderGuid,
+                    CustReceiptNum,
+                    selectedDate,
+                    selectedTime,
+                });
+                navigate("/receipt");
             })
             .catch((error) => {
                 console.error("Error registration:", error);
@@ -135,73 +120,103 @@ export const RegistrationPage: React.FC = () => {
     const isButtonDisabled = !selectedDate || !selectedTime;
 
     return (
-        <>
+        <div className="container-primary max-w-4xl mx-auto px-4 sm:px-6 py-8">
             {loading ? (
-                <Spinner size="lg" label="Завантаження дат" />
+                <div className="flex flex-col items-center justify-center h-64">
+                    <Spinner size="lg" label="Завантаження доступних дат..." />
+                </div>
             ) : (
-                <div className="container-primary">
-                    <h1 className="h1-primary">Попередній запис</h1>
-
-                    <p className="mb-5 text-2xl text-center">
-                        Будь ласка, оберіть бажаний час візиту
-                    </p>
-
-                    <p className="mb-5 text-2xl text-center font-bold">
-                        {selectedService?.Description}
-                    </p>
-
-                    <div className="flex  place-content-center gap-4 flex-wrap w-1/2 mx-auto">
-                        <Select
-                            items={availableDates.map((date) => ({
-                                label: date,
-                            }))}
-                            label="Оберіть дату"
-                            onSelectionChange={handleDateChange}
-                            size="lg"
-                        >
-                            {(availableDate) => (
-                                <SelectItem key={availableDate.label}>
-                                    {availableDate.label}
-                                </SelectItem>
-                            )}
-                        </Select>
-                        <Select
-                            items={availableTimes.map((time) => ({
-                                label: time,
-                            }))}
-                            label="Оберіть час"
-                            onSelectionChange={(keys) =>
-                                setSelectedTime(keys.currentKey as string)
-                            }
-                            size="lg"
-                        >
-                            {(availableTime) => (
-                                <SelectItem key={availableTime.label}>
-                                    {availableTime.label}
-                                </SelectItem>
-                            )}
-                        </Select>
+                <>
+                    <div className="text-center mb-10">
+                        <h1 className="h1-primary mb-4">Оберіть час візиту</h1>
+                        <div className="bg-blue-50 rounded-lg p-4 inline-block">
+                            <p className="text-xl font-semibold text-blue-800">
+                                {selectedService?.Description}
+                            </p>
+                            <p className="text-gray-600 text-lg">
+                                {selectedCenter?.ServiceCenterName}
+                            </p>
+                        </div>
                     </div>
 
-                    <div className="flex justify-center sm:gap-2 flex-wrap">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+                        <div className="space-y-2">
+                            <label className="block text-lg font-medium text-gray-700 ml-2 mb-2">
+                                Оберіть дату
+                            </label>
+                            <Select
+                                className="border rounded-2xl"
+                                classNames={{
+                                    trigger: "w-full min-w-[300px]",
+                                }}
+                                items={availableDates.map((date) => ({
+                                    label: date,
+                                }))}
+                                onSelectionChange={handleDateChange}
+                                size="lg"
+                            >
+                                {(availableDate) => (
+                                    <SelectItem key={availableDate.label}>
+                                        {availableDate.label}
+                                    </SelectItem>
+                                )}
+                            </Select>
+                        </div>
+
+                        <div className="space-y-2">
+                            <label className="block text-lg font-medium text-gray-700 ml-2 mb-2">
+                                Оберіть час
+                            </label>
+                            <Select
+                                className="border rounded-2xl"
+                                classNames={{
+                                    trigger: "w-full min-w-[300px]",
+                                }}
+                                items={availableTimes.map((time) => ({
+                                    label: time,
+                                }))}
+                                onSelectionChange={(keys) =>
+                                    setSelectedTime(keys.currentKey as string)
+                                }
+                                size="lg"
+                                isDisabled={!selectedDate}
+                            >
+                                {(availableTime) => (
+                                    <SelectItem key={availableTime.label}>
+                                        {availableTime.label}
+                                    </SelectItem>
+                                )}
+                            </Select>
+                        </div>
+                    </div>
+
+                    {selectedDate && selectedTime && (
+                        <div className="bg-green-50 rounded-lg p-4 mb-4 text-center w-full max-w-2xl mx-auto">
+                            <p className="text-lg font-medium text-green-800">
+                                Ви обрали: {selectedDate} о {selectedTime}
+                            </p>
+                        </div>
+                    )}
+
+                    <div className="flex flex-col sm:flex-row justify-center gap-4 w-full">
                         <Button
-                            className="btn-primary order-2 sm:order-1"
+                            className="btn-primary px-8 py-3 w-full sm:w-auto"
                             color="primary"
                             onPress={() => navigate("/servicesAndGroups")}
                         >
-                            Повернутися назад
+                            ⬅️ Повернутися
                         </Button>
                         <Button
-                            className="btn-primary sm:w-auto order-1 sm:order-2"
+                            className="btn-primary px-8 py-3 w-full sm:w-auto"
                             color="primary"
                             onPress={handleRegistration}
                             isDisabled={isButtonDisabled}
                         >
-                            Зареєструватись
+                            ✅ Підтвердити запис
                         </Button>
                     </div>
-                </div>
+                </>
             )}
-        </>
+        </div>
     );
 };

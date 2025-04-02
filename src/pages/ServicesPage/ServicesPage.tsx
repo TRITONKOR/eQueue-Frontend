@@ -16,6 +16,8 @@ interface Service {
     OrderWeight: number;
 }
 
+const CACHE_EXPIRY = 15 * 60 * 1000; // 15 хвилин
+
 export const ServicesPage: React.FC = () => {
     const { userProfile } = useUser();
     const { selectedCenter } = useServiceCenter();
@@ -65,7 +67,7 @@ export const ServicesPage: React.FC = () => {
                     cacheKey,
                     JSON.stringify({
                         data: data.d,
-                        expiry: Date.now() + 900000, // 15 minutes
+                        expiry: Date.now() + CACHE_EXPIRY,
                     })
                 );
             } else {
@@ -85,48 +87,78 @@ export const ServicesPage: React.FC = () => {
     );
 
     return (
-        <>
+        <div className="container-primary max-w-4xl mx-auto px-4 sm:px-6 py-8">
             {loading ? (
-                <Spinner size="lg" label="Завантаження послуг" />
+                <div className="flex flex-col items-center justify-center h-64">
+                    <Spinner size="lg" label="Завантаження послуг..." />
+                </div>
             ) : (
-                <div className="container-primary">
-                    <h1 className="h1-primary">
-                        Будь ласка, оберіть необхідну послугу
-                    </h1>
-
-                    <p className="mb-5 text-lg sm:text-2xl text-center">
-                        {selectedCenter?.ServiceCenterName}
-                    </p>
-
-                    <Input
-                        type="text"
-                        placeholder="Пошук послуг..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full px-6 mb-6"
-                        size="lg"
-                        classNames={{ input: " text-lg" }}
-                    />
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 w-full overflow-auto max-h-[500px] px-6 justify-center">
-                        {filteredServices.map((service: Service) => (
-                            <ServiceItem
-                                key={service.ServiceId}
-                                service={service}
-                                onPress={setSelectedService}
-                            />
-                        ))}
+                <>
+                    <div className="text-center mb-10">
+                        <h1 className="h1-primary mb-4">Оберіть послугу</h1>
+                        <p className="text-xl text-gray-600">
+                            {selectedCenter?.ServiceCenterName}
+                        </p>
                     </div>
 
-                    <Button
-                        className="btn-primary sm:w-auto"
-                        color="primary"
-                        onPress={() => navigate("/serviceCenters")}
-                    >
-                        Повернутися назад
-                    </Button>
-                </div>
+                    <div className="mb-8 w-full max-w-md mx-auto">
+                        <Input
+                            type="search"
+                            placeholder="Пошук послуг..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="w-full mx-auto"
+                            size="lg"
+                            classNames={{
+                                input: "form-input__field",
+                                inputWrapper: "form-input__wrapper",
+                            }}
+                        />
+                    </div>
+
+                    {filteredServices.length > 0 ? (
+                        <div
+                            className={`grid ${
+                                filteredServices.length === 1
+                                    ? "justify-items-center"
+                                    : ""
+                            } gap-6 mb-8`}
+                        >
+                            <div
+                                className={`grid ${
+                                    filteredServices.length === 1
+                                        ? "md:grid-cols-1 max-w-md"
+                                        : "md:grid-cols-2"
+                                } gap-6`}
+                            >
+                                {filteredServices.map((service) => (
+                                    <ServiceItem
+                                        key={service.ServiceId}
+                                        service={service}
+                                        onPress={setSelectedService}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="bg-blue-50 rounded-lg p-6 text-center mb-8">
+                            <p className="text-lg text-gray-700">
+                                Не знайдено послуг за вашим запитом
+                            </p>
+                        </div>
+                    )}
+
+                    <div className="flex justify-center">
+                        <Button
+                            className="btn-primary px-8 py-3"
+                            color="primary"
+                            onPress={() => navigate("/serviceCenters")}
+                        >
+                            ⬅️ Повернутися до центрів
+                        </Button>
+                    </div>
+                </>
             )}
-        </>
+        </div>
     );
 };

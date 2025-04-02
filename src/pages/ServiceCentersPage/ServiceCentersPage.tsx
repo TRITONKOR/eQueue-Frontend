@@ -17,6 +17,7 @@ interface ServiceCenter {
 
 const allowedServiceCenterIds = [1, 2];
 const CACHE_KEY = "serviceCentersCache";
+const CACHE_EXPIRY = 15 * 60 * 1000; // 15 хвилин
 
 export const ServiceCentersPage: React.FC = () => {
     const { userProfile } = useUser();
@@ -25,8 +26,9 @@ export const ServiceCentersPage: React.FC = () => {
 
     const [centers, setCenters] = useState<ServiceCenter[]>([]);
     const [searchQuery, setSearchQuery] = useState<string>("");
-    const organizationGuid = import.meta.env.VITE_ORGANIZATION_GUID;
     const [loading, setLoading] = useState<boolean>(true);
+
+    const organizationGuid = import.meta.env.VITE_ORGANIZATION_GUID;
 
     useEffect(() => {
         if (userProfile.firstName === "") {
@@ -65,7 +67,7 @@ export const ServiceCentersPage: React.FC = () => {
                     CACHE_KEY,
                     JSON.stringify({
                         data: filteredCenters,
-                        expiry: Date.now() + 900000, // 15 minutes
+                        expiry: Date.now() + CACHE_EXPIRY,
                     })
                 );
             } else {
@@ -87,47 +89,79 @@ export const ServiceCentersPage: React.FC = () => {
     );
 
     return (
-        <>
+        <div className="container-primary max-w-4xl mx-auto px-4 sm:px-6 py-8">
             {loading ? (
-                <Spinner size="lg" label="Завантаження центрів" />
+                <div className="flex flex-col items-center justify-center h-64">
+                    <Spinner size="lg" label="Завантаження центрів..." />
+                </div>
             ) : (
-                <div className="container-primary">
-                    <h1 className="h1-primary">Попередній запис</h1>
-
-                    <p className="mb-5 text-2xl text-center">
-                        Будь ласка, оберіть ЦНАП, або його територіальний
-                        підрозділ
-                    </p>
-
-                    <Input
-                        type="text"
-                        placeholder="Пошук сервісного центру..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full px-6 mb-6"
-                        size="lg"
-                        classNames={{ input: " text-lg" }}
-                    />
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 overflow-auto max-h-[500px] max-w-full px-6 justify-center">
-                        {filteredCenters.map((center: ServiceCenter) => (
-                            <ServiceCenterItem
-                                key={center.ServiceCenterId}
-                                serviceCenter={center}
-                                onPress={setSelectedCenter}
-                            />
-                        ))}
+                <>
+                    <div className="text-center mb-10">
+                        <h1 className="h1-primary mb-4">Попередній запис</h1>
+                        <p className="text-xl text-gray-600">
+                            Будь ласка, оберіть ЦНАП або його територіальний
+                            підрозділ
+                        </p>
                     </div>
 
-                    <Button
-                        className="btn-primary sm:w-auto"
-                        color="primary"
-                        onPress={() => navigate("/profile")}
-                    >
-                        Повернутися назад
-                    </Button>
-                </div>
+                    <div className="mb-8 w-full max-w-md mx-auto">
+                        <Input
+                            type="search"
+                            placeholder="Пошук сервісного центру..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="w-full mx-auto"
+                            size="lg"
+                            classNames={{
+                                input: "form-input__field",
+                                inputWrapper: "form-input__wrapper",
+                            }}
+                        />
+                    </div>
+
+                    {filteredCenters.length > 0 ? (
+                        <div
+                            className={`grid ${
+                                filteredCenters.length === 1
+                                    ? "justify-items-center"
+                                    : ""
+                            } gap-6 mb-8`}
+                        >
+                            <div
+                                className={`grid ${
+                                    filteredCenters.length === 1
+                                        ? "md:grid-cols-1 max-w-xl"
+                                        : "md:grid-cols-2"
+                                } gap-6`}
+                            >
+                                {filteredCenters.map((center) => (
+                                    <ServiceCenterItem
+                                        key={center.ServiceCenterId}
+                                        serviceCenter={center}
+                                        onPress={setSelectedCenter}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="bg-blue-50 rounded-lg p-6 text-center mb-8">
+                            <p className="text-lg text-gray-700">
+                                Не знайдено центрів за вашим запитом
+                            </p>
+                        </div>
+                    )}
+
+                    <div className="flex justify-center">
+                        <Button
+                            className="btn-primary px-8 py-3"
+                            color="primary"
+                            onPress={() => navigate("/profile")}
+                        >
+                            ⬅️ Повернутися назад
+                        </Button>
+                    </div>
+                </>
             )}
-        </>
+        </div>
     );
 };

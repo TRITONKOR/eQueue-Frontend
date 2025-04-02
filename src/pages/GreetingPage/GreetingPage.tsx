@@ -26,7 +26,7 @@ const GreetingPage: React.FC = () => {
                     <h2 className="text-xl font-semibold text-gray-800 mb-4">
                         Інформація про запис
                     </h2>
-                    <ul className="space-y-4 text-gray-600">
+                    <ul className="space-y-4 text-lg text-gray-600">
                         <li className="flex items-start">
                             <span className="mr-2 text-blue-500">•</span>
                             <span>
@@ -62,10 +62,10 @@ const GreetingPage: React.FC = () => {
                 </div>
 
                 <div className="bg-yellow-50 rounded-lg p-4 border border-yellow-200">
-                    <h3 className="font-medium text-yellow-800 mb-2">
+                    <h3 className="font-medium text-xl text-yellow-800 mb-2">
                         Важливо!
                     </h3>
-                    <p className="text-yellow-700">
+                    <p className="text-yellow-700 text-lg">
                         У разі запізнення на понад 10 хвилин Ваш запис може бути
                         анульовано.
                     </p>
@@ -78,7 +78,7 @@ const GreetingPage: React.FC = () => {
                     color="primary"
                     onPress={() => navigate("/profile")}
                 >
-                    Почати запис ➜
+                    Почати запис ➡️
                 </Button>
             </div>
         </div>

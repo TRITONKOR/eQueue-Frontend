@@ -139,11 +139,11 @@ export const ReceiptPage: React.FC = () => {
                                 Деталі реєстрації
                             </h2>
 
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6 sm:text-lg text-base">
                                 <div>
                                     <p className="font-medium">
                                         📅 Дата прийому:{" "}
-                                        <span className="font-bold text-lg">
+                                        <span className="font-bold">
                                             {receipt?.selectedDate}
                                         </span>
                                     </p>
@@ -151,7 +151,7 @@ export const ReceiptPage: React.FC = () => {
                                 <div>
                                     <p className="font-medium">
                                         ⏰ Час:{" "}
-                                        <span className="font-bold text-lg">
+                                        <span className="font-bold">
                                             {receipt?.selectedTime}
                                         </span>
                                     </p>
@@ -159,7 +159,7 @@ export const ReceiptPage: React.FC = () => {
                                 <div>
                                     <p className="font-medium">
                                         🔢 Номер у черзі:{" "}
-                                        <span className="font-bold text-lg">
+                                        <span className="font-bold">
                                             {receipt?.CustReceiptNum}
                                         </span>
                                     </p>
@@ -175,10 +175,10 @@ export const ReceiptPage: React.FC = () => {
                             </div>
 
                             <div className="bg-red-100 p-4 rounded-md">
-                                <h3 className="font-bold text-red-600 mb-2">
+                                <h3 className="font-bold text-red-600 mb-2 sm:text-xl text-lg">
                                     ⚠️ Увага!
                                 </h3>
-                                <ul className="list-disc list-inside space-y-2">
+                                <ul className="list-disc list-inside space-y-2 sm:text-lg text-base">
                                     <li>
                                         Просимо своєчасно прибути до центру, у
                                         разі запізнення ваш чек буде анульовано!
@@ -222,7 +222,7 @@ export const ReceiptPage: React.FC = () => {
                                 "https://rada-uzhgorod.gov.ua/about-city")
                         }
                     >
-                        Завершити
+                        🚪 Завершити
                     </Button>
                     <Button
                         className="btn-primary order-1 sm:order-2"
