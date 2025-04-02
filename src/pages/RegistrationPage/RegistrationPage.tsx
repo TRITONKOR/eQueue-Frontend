@@ -98,9 +98,9 @@ export const RegistrationPage: React.FC = () => {
                     userProfile.phone
                 }&email=${userProfile.email}&name=${userProfile.lastName} ${
                     userProfile.firstName
-                } ${userProfile.middleName}&date=${reformatDate(
-                    selectedDate
-                )} ${selectedTime}:00`
+                } ${userProfile.middleName}&customerInfo=${
+                    userProfile.companyName
+                }&date=${reformatDate(selectedDate)} ${selectedTime}:00`
             )
             .then((response) => {
                 const { CustOrderGuid, CustReceiptNum } = response.data.d;

@@ -1,7 +1,8 @@
 import { Button } from "@heroui/button";
 import { Checkbox } from "@heroui/checkbox";
+import { Form } from "@heroui/form";
 import { Input } from "@heroui/input";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../../context/UserContext";
 import "./profilePage.scss";
@@ -20,6 +21,24 @@ export const ProfilePage: React.FC = () => {
         agreement: false,
     });
 
+    const [validationStatus, setValidationStatus] = useState({
+        lastName: true,
+        firstName: true,
+        middleName: true,
+        phone: true,
+        email: true,
+        companyName: true,
+    });
+
+    const [validationMessages, setValidationMessages] = useState({
+        lastName: "",
+        firstName: "",
+        middleName: "",
+        phone: "",
+        email: "",
+        companyName: "",
+    });
+
     useEffect(() => {
         setFormData({
             lastName: userProfile.lastName || "",
@@ -30,6 +49,48 @@ export const ProfilePage: React.FC = () => {
             companyName: userProfile.companyName || "",
             agreement: false,
         });
+    }, [userProfile]);
+
+    const validateLastName = useCallback((value: string) => {
+        const isValid = value.trim().length >= 2;
+        return isValid ? null : "Прізвище повинно містити не менше 2 символів";
+    }, []);
+
+    const validateFirstName = useCallback((value: string) => {
+        const isValid = value.trim().length >= 2;
+        return isValid ? null : "Ім'я повинно містити не менше 2 символів";
+    }, []);
+
+    const validateMiddleName = useCallback((value: string) => {
+        const isValid = value.trim().length >= 2;
+        return isValid
+            ? null
+            : "По батькові повинно містити не менше 2 символів";
+    }, []);
+
+    const validatePhone = useCallback((value: string) => {
+        const phonePattern = /^\+380\d{9}$/;
+        const isValid = phonePattern.test(value) && value.length === 13;
+        return isValid
+            ? null
+            : "Номер телефону повинен бути у форматі +380XXXXXXXXX";
+    }, []);
+
+    const validateEmail = useCallback((value: string) => {
+        if (!value.trim()) {
+            return null;
+        }
+
+        const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        const isValid = emailPattern.test(value);
+        return isValid ? null : "Невірний формат email";
+    }, []);
+
+    const validateCompanyName = useCallback((value: string) => {
+        const isValid = value.trim().length >= 2;
+        return isValid
+            ? null
+            : "Назва юридичної особи повинно містити не менше 2 символів";
     }, []);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -46,10 +107,55 @@ export const ProfilePage: React.FC = () => {
                 ...userProfile,
                 [name]: updatedValue,
             });
+
+            let isValid = true;
+            let errorMessage = "";
+
+            switch (name) {
+                case "lastName":
+                    errorMessage = validateLastName(value as string) || "";
+                    isValid = !errorMessage;
+                    break;
+                case "firstName":
+                    errorMessage = validateFirstName(value as string) || "";
+                    isValid = !errorMessage;
+                    break;
+                case "middleName":
+                    errorMessage = validateMiddleName(value as string) || "";
+                    isValid = !errorMessage;
+                    break;
+                case "phone":
+                    errorMessage = validatePhone(value as string) || "";
+                    isValid = !errorMessage;
+                    break;
+                case "email":
+                    errorMessage = validateEmail(value as string) || "";
+                    isValid = !errorMessage;
+                    break;
+                case "companyName":
+                    errorMessage = validateCompanyName(value as string) || "";
+                    isValid = !errorMessage;
+                    break;
+            }
+
+            setValidationStatus((prev) => ({
+                ...prev,
+                [name]: isValid,
+            }));
+
+            setValidationMessages((prev) => ({
+                ...prev,
+                [name]: errorMessage,
+            }));
         }
     };
 
     const isFormValid =
+        validationStatus.lastName &&
+        validationStatus.firstName &&
+        validationStatus.middleName &&
+        validationStatus.phone &&
+        validationStatus.email &&
         formData.lastName.trim() !== "" &&
         formData.firstName.trim() !== "" &&
         formData.middleName.trim() !== "" &&
@@ -58,16 +164,16 @@ export const ProfilePage: React.FC = () => {
 
     return (
         <div className="container-primary max-w-3xl mx-auto px-4 sm:px-6 py-8">
-            <div className="text-center mb-10">
+            <div className="text-center mb-5">
                 <h1 className="h1-primary mb-4">Анкета відвідувача</h1>
-                <p className="text-gray-600">
+                <p className="text-gray-600 sm:text-xl text-lg">
                     Будь ласка, заповніть обов'язкові поля (позначені{" "}
                     <span className="text-red-500">*</span>) для продовження
                 </p>
             </div>
 
-            <form className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Form className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
                     <div className="space-y-6">
                         <div className="form-group">
                             <label htmlFor="lastName" className="form-label">
@@ -86,6 +192,11 @@ export const ProfilePage: React.FC = () => {
                                 onChange={handleChange}
                                 value={formData.lastName}
                                 size="lg"
+                                errorMessage={validationMessages.lastName}
+                                isInvalid={
+                                    !validationStatus.lastName &&
+                                    formData.lastName !== ""
+                                }
                             />
                         </div>
 
@@ -106,6 +217,11 @@ export const ProfilePage: React.FC = () => {
                                 onChange={handleChange}
                                 value={formData.firstName}
                                 size="lg"
+                                errorMessage={validationMessages.firstName}
+                                isInvalid={
+                                    !validationStatus.firstName &&
+                                    formData.firstName !== ""
+                                }
                             />
                         </div>
 
@@ -127,6 +243,11 @@ export const ProfilePage: React.FC = () => {
                                 onChange={handleChange}
                                 value={formData.middleName}
                                 size="lg"
+                                errorMessage={validationMessages.middleName}
+                                isInvalid={
+                                    !validationStatus.middleName &&
+                                    formData.middleName !== ""
+                                }
                             />
                         </div>
                     </div>
@@ -144,12 +265,18 @@ export const ProfilePage: React.FC = () => {
                                     input: "form-input__field",
                                     inputWrapper: "form-input__wrapper",
                                 }}
+                                placeholder="+380XXXXXXXXX"
                                 isRequired
                                 type="tel"
                                 name="phone"
                                 onChange={handleChange}
                                 value={formData.phone}
                                 size="lg"
+                                errorMessage={validationMessages.phone}
+                                isInvalid={
+                                    !validationStatus.phone &&
+                                    formData.phone !== ""
+                                }
                             />
                         </div>
 
@@ -169,6 +296,11 @@ export const ProfilePage: React.FC = () => {
                                 onChange={handleChange}
                                 value={formData.email}
                                 size="lg"
+                                errorMessage={validationMessages.email}
+                                isInvalid={
+                                    !validationStatus.email &&
+                                    formData.email !== ""
+                                }
                             />
                         </div>
 
@@ -188,6 +320,11 @@ export const ProfilePage: React.FC = () => {
                                 onChange={handleChange}
                                 value={formData.companyName}
                                 size="lg"
+                                errorMessage={validationMessages.companyName}
+                                isInvalid={
+                                    !validationStatus.companyName &&
+                                    formData.companyName !== ""
+                                }
                             />
                         </div>
                     </div>
@@ -200,7 +337,7 @@ export const ProfilePage: React.FC = () => {
                         classNames={{
                             base: "items-start",
                             wrapper: "mt-1",
-                            label: "text-sm sm:text-base text-gray-700",
+                            label: "text-base sm:text-lg text-gray-700",
                         }}
                         isRequired
                         onChange={handleChange}
@@ -213,13 +350,13 @@ export const ProfilePage: React.FC = () => {
                     </Checkbox>
                 </div>
 
-                <div className="flex flex-col sm:flex-row justify-center gap-4 mt-10">
+                <div className="flex flex-col sm:flex-row justify-center gap-4 mt-10 w-full">
                     <Button
                         className="btn-primary px-8 py-3 order-2 sm:order-1"
                         color="primary"
                         onPress={() => navigate("/")}
                     >
-                        ← Повернутися назад
+                        ⬅️ Повернутися назад
                     </Button>
                     <Button
                         className="btn-primary px-8 py-3 order-1 sm:order-2"
@@ -227,10 +364,10 @@ export const ProfilePage: React.FC = () => {
                         isDisabled={!isFormValid}
                         onPress={() => navigate("/serviceCenters")}
                     >
-                        Продовжити →
+                        Продовжити ➡️
                     </Button>
                 </div>
-            </form>
+            </Form>
         </div>
     );
 };
