@@ -21,7 +21,9 @@ export const RegistrationPage: React.FC = () => {
     const { setReceipt } = useReceipt();
 
     const [availableDates, setAvailableDates] = useState<string[]>([]);
-    const [availableTimes, setAvailableTimes] = useState<string[]>([]);
+    const [availableTimes, setAvailableTimes] = useState<
+        { time: string; isAvailable: boolean }[]
+    >([]);
 
     const [selectedDate, setSelectedDate] = useState<string | null>(null);
     const [selectedTime, setSelectedTime] = useState<string | null>(null);
@@ -172,17 +174,29 @@ export const RegistrationPage: React.FC = () => {
                                 classNames={{
                                     trigger: "w-full min-w-[300px]",
                                 }}
-                                items={availableTimes.map((time) => ({
-                                    label: time,
+                                items={availableTimes.map((timeObj) => ({
+                                    label: timeObj.time,
+                                    key: timeObj.time,
+                                    isDisabled: !timeObj.isAvailable,
                                 }))}
                                 onSelectionChange={(keys) =>
                                     setSelectedTime(keys.currentKey as string)
                                 }
                                 size="lg"
                                 isDisabled={!selectedDate}
+                                disabledKeys={availableTimes
+                                    .filter((time) => !time.isAvailable)
+                                    .map((time) => time.time)}
                             >
                                 {(availableTime) => (
-                                    <SelectItem key={availableTime.label}>
+                                    <SelectItem
+                                        key={availableTime.key}
+                                        className={
+                                            !availableTime.isDisabled
+                                                ? ""
+                                                : "opacity-50 line-through"
+                                        }
+                                    >
                                         {availableTime.label}
                                     </SelectItem>
                                 )}

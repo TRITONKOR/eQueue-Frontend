@@ -41,9 +41,9 @@ export const fetchAvailableTimes = async (
     serviceCenterId: number,
     serviceId: number,
     date: string
-): Promise<string[]> => {
+): Promise<{ time: string; isAvailable: boolean }[]> => {
     try {
-        const formattedDate = reformatDate(date); // Перетворюємо дату у правильний формат перед запитом
+        const formattedDate = reformatDate(date);
         const response = await axios.get(
             `/api/QueueService.svc/json_pre_reg_https/GetTimeList?organisationGuid={${organizationGuid}}&serviceCenterId=${serviceCenterId}&serviceId=${serviceId}&date=${formattedDate}`
         );
@@ -51,9 +51,10 @@ export const fetchAvailableTimes = async (
         const data = response.data;
 
         if (data && Array.isArray(data.d)) {
-            return data.d
-                .filter((time: PreRegTime) => time.IsAllow === 1)
-                .map((time: PreRegTime) => parseTime(time.StartTime));
+            return data.d.map((time: PreRegTime) => ({
+                time: parseTime(time.StartTime),
+                isAvailable: time.IsAllow === 1,
+            }));
         } else {
             console.error("Invalid time data format:", data);
             return [];
