@@ -71,6 +71,7 @@ export const ServiceCentersPage: React.FC = () => {
                     })
                 );
             } else {
+                console.log(data);
                 console.error(
                     "ServiceCenters not found or 'd' is not an array"
                 );

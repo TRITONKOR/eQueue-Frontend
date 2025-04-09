@@ -1,16 +1,22 @@
 version: "3.8"
 services:
-    frontend:
-        container_name: frontend_equeue
+    nginx:
         build:
             context: .
             dockerfile: Dockerfile
-        ports:
-            - "5173:5173"
-        volumes:
-            - .:/app
-            - /app/node_modules
+        container_name: nginx_equeue
+        image: nginx_equeue
         environment:
-            - NODE_END=production
-        stdin_open: true
-        tty: true
+            - VITE_API_URL=${VITE_API_URL:-https://elreg.rada-uzhgorod.gov.ua}
+            - VITE_API_HOST=${VITE_API_HOST:-elreg.rada-uzhgorod.gov.ua}
+            - .env
+        ports:
+            - "80:80"
+        volumes:
+            - ./default.conf.template:/etc/nginx/templates/default.conf.template
+        networks:
+            - app-network
+
+networks:
+    app-network:
+        driver: bridge

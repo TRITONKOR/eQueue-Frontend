@@ -69,11 +69,8 @@ export const ProfilePage: React.FC = () => {
     }, []);
 
     const validatePhone = useCallback((value: string) => {
-        const phonePattern = /^\+380\d{9}$/;
-        const isValid = phonePattern.test(value) && value.length === 13;
-        return isValid
-            ? null
-            : "Номер телефону повинен бути у форматі +380XXXXXXXXX";
+        const isValid = /^\d{10}$/.test(value);
+        return isValid ? null : "Номер телефону повинен містити рівно 10 цифр";
     }, []);
 
     const validateEmail = useCallback((value: string) => {
@@ -265,7 +262,7 @@ export const ProfilePage: React.FC = () => {
                                     input: "form-input__field",
                                     inputWrapper: "form-input__wrapper",
                                 }}
-                                placeholder="+380XXXXXXXXX"
+                                placeholder="XXXXXXXXX"
                                 isRequired
                                 type="tel"
                                 name="phone"
