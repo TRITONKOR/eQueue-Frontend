@@ -6,4 +6,4 @@ services:
         ports:
             - "8080:80"
         environment:
-            VITE_API_URL: http://host.docker.internal:3000
+            VITE_API_URL: ${VITE_API_URL}
