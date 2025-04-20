@@ -6,7 +6,6 @@ dotenv.config();
 
 export default defineConfig(() => {
     const url = process.env.VITE_API_URL;
-    console.log("VITE_API_URL", url);
 
     return {
         plugins: [react()],
