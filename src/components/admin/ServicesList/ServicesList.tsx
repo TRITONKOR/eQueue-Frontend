@@ -30,7 +30,7 @@ export const ServiceList: React.FC = () => {
         const fetchCenters = async () => {
             try {
                 const res = await axios.get(
-                    `/api/api/getServiceCenterList?organisationGuid={${organizationGuid}}`
+                    `/api/getServiceCenterList?organisationGuid={${organizationGuid}}`
                 );
                 setCenters(res.data);
             } catch {
@@ -48,7 +48,7 @@ export const ServiceList: React.FC = () => {
             setLoading(true);
             try {
                 const res = await axios.get<RawService[]>(
-                    `/api/api/GetServiceList?organisationGuid={${organizationGuid}}&serviceCenterId=${selectedCenterId}`
+                    `/api/GetServiceList?organisationGuid={${organizationGuid}}&serviceCenterId=${selectedCenterId}`
                 );
 
                 const selectedCenter = centers.find(
@@ -88,7 +88,7 @@ export const ServiceList: React.FC = () => {
 
     const handleDeleteService = async (id: string) => {
         try {
-            await axios.delete(`/api/api/services/${id}`);
+            await axios.delete(`/api/services/${id}`);
             setServices((prev) => prev.filter((s) => s.id !== id));
         } catch (err) {
             console.error("Помилка видалення сервісу", err);
@@ -108,7 +108,7 @@ export const ServiceList: React.FC = () => {
         }
 
         try {
-            const res = await axios.post(`/api/api/services`, {
+            const res = await axios.post(`/api/services`, {
                 serviceCenterId: selectedCenterId,
                 description: newDescription.trim(),
             });
@@ -137,7 +137,7 @@ export const ServiceList: React.FC = () => {
 
     const handleUpdateService = async (id: string, newDescription: string) => {
         try {
-            await axios.put(`/api/api/services/${id}`, {
+            await axios.put(`/api/services/${id}`, {
                 description: newDescription,
             });
 

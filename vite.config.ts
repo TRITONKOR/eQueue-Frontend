@@ -1,7 +1,13 @@
 import react from "@vitejs/plugin-react";
+import dotenv from "dotenv";
 import { defineConfig } from "vite";
 
+dotenv.config();
+
 export default defineConfig(() => {
+    const url = process.env.VITE_API_URL;
+    console.log("VITE_API_URL", url);
+
     return {
         plugins: [react()],
         server: {
@@ -12,7 +18,7 @@ export default defineConfig(() => {
             },
             proxy: {
                 "/api": {
-                    target: "http://localhost:3000/api",
+                    target: url,
                     changeOrigin: true,
                 },
             },

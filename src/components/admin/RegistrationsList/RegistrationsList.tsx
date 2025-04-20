@@ -36,7 +36,7 @@ export const RegistrationsList: React.FC = () => {
         const fetchCenters = async () => {
             try {
                 const res = await axios.get(
-                    `/api/api/getServiceCenterList?organisationGuid={${organizationGuid}}`
+                    `/api/getServiceCenterList?organisationGuid={${organizationGuid}}`
                 );
                 setCenters(res.data);
             } catch (err) {
@@ -52,7 +52,7 @@ export const RegistrationsList: React.FC = () => {
         const fetchServices = async () => {
             try {
                 const res = await axios.get<RawService[]>(
-                    `/api/api/GetServiceList?organisationGuid={${organizationGuid}}&serviceCenterId=${selectedCenterId}`
+                    `/api/GetServiceList?organisationGuid={${organizationGuid}}&serviceCenterId=${selectedCenterId}`
                 );
                 setServices(res.data);
             } catch (err) {
@@ -69,7 +69,7 @@ export const RegistrationsList: React.FC = () => {
             setLoading(true);
             try {
                 const res = await axios.get<RegistrationItemProps[]>(
-                    `/api/api/services/${selectedServiceId}/registrations`
+                    `/api/services/${selectedServiceId}/registrations`
                 );
                 setRegistrations(res.data);
             } catch (err) {
@@ -129,7 +129,7 @@ export const RegistrationsList: React.FC = () => {
 
     const handleDeleteRegistration = async (id: string) => {
         try {
-            await axios.delete(`/api/api/registrations/${id}`);
+            await axios.delete(`/api/registrations/${id}`);
             setRegistrations((prev) => prev.filter((r) => r.id !== id));
         } catch (err) {
             console.error("Помилка видалення реєстрації", err);
@@ -158,7 +158,7 @@ export const RegistrationsList: React.FC = () => {
                 registrationToSend
             ).toString();
             const res = await axios.post<RegistrationItemProps>(
-                `/api/api/RegCustomerEx?organisationGuid={${organizationGuid}}&serviceCenterId=${selectedCenterId}&${queryParams}`
+                `/api/RegCustomerEx?organisationGuid={${organizationGuid}}&serviceCenterId=${selectedCenterId}&${queryParams}`
             );
 
             setRegistrations((prev) => [...prev, res.data]);
@@ -197,7 +197,7 @@ export const RegistrationsList: React.FC = () => {
             };
 
             const res = await axios.put(
-                `/api/api/registrations/${id}`,
+                `/api/registrations/${id}`,
                 registrationToSend
             );
             setRegistrations((prev) =>
