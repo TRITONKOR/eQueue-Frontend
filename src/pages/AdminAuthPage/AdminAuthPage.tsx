@@ -15,7 +15,7 @@ const AdminAuthPage: React.FC = () => {
 
     const handleLogin = async () => {
         try {
-            await axios.post("/api/api/login", {
+            await axios.post("/api/login", {
                 login,
                 password,
             });

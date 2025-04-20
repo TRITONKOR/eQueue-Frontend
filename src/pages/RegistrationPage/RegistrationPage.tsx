@@ -94,7 +94,7 @@ export const RegistrationPage: React.FC = () => {
 
         axios
             .post(
-                `/api/api/RegCustomerEx?organisationGuid={${organizationGuid}}&serviceCenterId=${
+                `/api/RegCustomerEx?organisationGuid={${organizationGuid}}&serviceCenterId=${
                     selectedCenter?.ServiceCenterId
                 }&serviceId=${selectedService?.ServiceId}&phone=${
                     userProfile.phone

@@ -51,7 +51,7 @@ export const ServiceCentersPage: React.FC = () => {
         setLoading(true);
         try {
             const response = await axios.get(
-                `/api/api/getServiceCenterList?organisationGuid={${organizationGuid}}`
+                `/api/getServiceCenterList?organisationGuid={${organizationGuid}}`
             );
 
             const data = response.data;

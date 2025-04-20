@@ -10,6 +10,12 @@ export default defineConfig(() => {
             hmr: {
                 clientPort: 80,
             },
+            proxy: {
+                "/api": {
+                    target: "http://localhost:3000",
+                    changeOrigin: true,
+                },
+            },
         },
         build: {
             outDir: "dist",
