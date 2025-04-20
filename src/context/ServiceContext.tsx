@@ -2,9 +2,8 @@ import { createContext, ReactNode, useContext, useState } from "react";
 
 interface Service {
     Description: string;
-    ServiceCenterId: number;
-    ServiceId: number;
-    OrderWeight: number;
+    ServiceCenterId: string;
+    ServiceId: string;
 }
 
 interface ServiceContextType {

@@ -1,9 +1,8 @@
 import { createContext, ReactNode, useContext, useState } from "react";
 
 interface ServiceCenter {
-    ServiceCenterId: number;
+    ServiceCenterId: string;
     ServiceCenterName: string;
-    BranchName: string;
     LocationName: string;
 }
 

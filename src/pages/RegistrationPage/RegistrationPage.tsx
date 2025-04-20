@@ -93,8 +93,8 @@ export const RegistrationPage: React.FC = () => {
         if (!selectedDate || !selectedTime) return;
 
         axios
-            .get(
-                `/api/QueueService.svc/json_pre_reg_https/RegCustomerEx?organisationGuid={${organizationGuid}}&serviceCenterId=${
+            .post(
+                `/api/api/RegCustomerEx?organisationGuid={${organizationGuid}}&serviceCenterId=${
                     selectedCenter?.ServiceCenterId
                 }&serviceId=${selectedService?.ServiceId}&phone=${
                     userProfile.phone
@@ -102,10 +102,10 @@ export const RegistrationPage: React.FC = () => {
                     userProfile.firstName
                 } ${userProfile.middleName}&customerInfo=${
                     userProfile.companyName
-                }&date=${reformatDate(selectedDate)} ${selectedTime}:00`
+                }&date=${reformatDate(selectedDate)} ${selectedTime}`
             )
             .then((response) => {
-                const { CustOrderGuid, CustReceiptNum } = response.data.d;
+                const { CustOrderGuid, CustReceiptNum } = response.data;
                 setReceipt({
                     CustOrderGuid,
                     CustReceiptNum,

@@ -32,7 +32,7 @@ export const ReceiptPage: React.FC = () => {
         try {
             axios
                 .get(
-                    `/api/QueueService.svc/json_pre_reg_https/GetReceipt?organisationGuid={${
+                    `/api/api/GetReceipt?organisationGuid={${
                         import.meta.env.VITE_ORGANIZATION_GUID
                     }}&serviceCenterId=${
                         selectedCenter?.ServiceCenterId
@@ -40,7 +40,7 @@ export const ReceiptPage: React.FC = () => {
                 )
                 .then((response) => {
                     const data = response.data;
-                    setHtmlReceipt(data.d);
+                    setHtmlReceipt(data);
                     console.log(data);
                 });
         } catch (error) {
@@ -169,7 +169,7 @@ export const ReceiptPage: React.FC = () => {
                                         📍 Центр обслуговування:
                                     </p>
                                     <p className="font-bold">
-                                        {selectedCenter?.ServiceCenterName}
+                                        {selectedCenter?.LocationName}
                                     </p>
                                 </div>
                             </div>

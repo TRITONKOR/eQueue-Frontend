@@ -2,8 +2,7 @@ import { Button } from "@heroui/button";
 import { useNavigate } from "react-router-dom";
 
 interface ServiceCenter {
-    BranchName: string;
-    ServiceCenterId: number;
+    ServiceCenterId: string;
     ServiceCenterName: string;
     LocationName: string;
 }

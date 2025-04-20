@@ -3,9 +3,8 @@ import { useNavigate } from "react-router-dom";
 
 interface Service {
     Description: string;
-    ServiceCenterId: number;
-    ServiceId: number;
-    OrderWeight: number;
+    ServiceCenterId: string;
+    ServiceId: string;
 }
 
 interface ServiceItemProps {

@@ -9,13 +9,11 @@ import { useServiceCenter } from "../../context/ServiceCenterContext";
 import { useUser } from "../../context/UserContext";
 
 interface ServiceCenter {
-    BranchName: string;
-    ServiceCenterId: number;
+    ServiceCenterId: string;
     ServiceCenterName: string;
     LocationName: string;
 }
 
-const allowedServiceCenterIds = [1, 2];
 const CACHE_KEY = "serviceCentersCache";
 const CACHE_EXPIRY = 15 * 60 * 1000; // 15 хвилин
 
@@ -53,27 +51,24 @@ export const ServiceCentersPage: React.FC = () => {
         setLoading(true);
         try {
             const response = await axios.get(
-                `/api/QueueService.svc/json_pre_reg_https/getServiceCenterList?organisationGuid={${organizationGuid}}`
+                `/api/api/getServiceCenterList?organisationGuid={${organizationGuid}}`
             );
 
             const data = response.data;
-            if (data && Array.isArray(data.d)) {
-                const filteredCenters = data.d.filter((center: ServiceCenter) =>
-                    allowedServiceCenterIds.includes(center.ServiceCenterId)
-                );
 
-                setCenters(filteredCenters);
+            if (response && Array.isArray(data)) {
+                setCenters(data);
                 localStorage.setItem(
                     CACHE_KEY,
                     JSON.stringify({
-                        data: filteredCenters,
+                        data: data,
                         expiry: Date.now() + CACHE_EXPIRY,
                     })
                 );
             } else {
-                console.log(data);
+                console.log(response);
                 console.error(
-                    "ServiceCenters not found or 'd' is not an array"
+                    "ServiceCenters not found or 'data' is not an array"
                 );
             }
         } catch (error) {

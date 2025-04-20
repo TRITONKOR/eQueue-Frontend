@@ -11,12 +11,11 @@ import { useUser } from "../../context/UserContext";
 
 interface Service {
     Description: string;
-    ServiceCenterId: number;
-    ServiceId: number;
-    OrderWeight: number;
+    ServiceCenterId: string;
+    ServiceId: string;
 }
 
-const CACHE_EXPIRY = 15 * 60 * 1000; // 15 хвилин
+const CACHE_EXPIRY = 15 * 60 * 1000;
 
 export const ServicesPage: React.FC = () => {
     const { userProfile } = useUser();
@@ -58,21 +57,23 @@ export const ServicesPage: React.FC = () => {
         setLoading(true);
         try {
             const response = await axios.get(
-                `/api/QueueService.svc/json_pre_reg_https/GetServiceList?organisationGuid={${organizationGuid}}&serviceCenterId=${selectedCenter?.ServiceCenterId}`
+                `/api/api/GetServiceList?organisationGuid={${organizationGuid}}&serviceCenterId=${selectedCenter?.ServiceCenterId}`
             );
+
             const data = response.data;
-            if (data && Array.isArray(data.d)) {
-                setServices(data.d);
+
+            if (data && Array.isArray(data)) {
+                setServices(data);
                 localStorage.setItem(
                     cacheKey,
                     JSON.stringify({
-                        data: data.d,
+                        data: data,
                         expiry: Date.now() + CACHE_EXPIRY,
                     })
                 );
             } else {
                 console.error(
-                    "ServiceCenters not found or 'd' is not an array"
+                    "ServiceCenters not found or 'data' is not an array"
                 );
             }
         } catch (error) {

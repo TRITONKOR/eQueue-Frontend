@@ -13,18 +13,18 @@ interface PreRegTime {
 const organizationGuid = import.meta.env.VITE_ORGANIZATION_GUID;
 
 export const fetchAvailableDates = async (
-    serviceCenterId: number,
-    serviceId: number
+    serviceCenterId: string,
+    serviceId: string
 ): Promise<string[]> => {
     try {
         const response = await axios.get(
-            `/api/QueueService.svc/json_pre_reg_https/GetDayList?organisationGuid={${organizationGuid}}&serviceCenterId=${serviceCenterId}&serviceId=${serviceId}`
+            `/api/api/GetDayList?organisationGuid={${organizationGuid}}&serviceCenterId=${serviceCenterId}&serviceId=${serviceId}`
         );
 
         const data = response.data;
 
-        if (data && Array.isArray(data.d)) {
-            return data.d
+        if (data && Array.isArray(data)) {
+            return data
                 .filter((day: PreRegDay) => day.IsAllow === 1)
                 .map((day: PreRegDay) => formatDate(day.DatePart));
         } else {
@@ -38,21 +38,21 @@ export const fetchAvailableDates = async (
 };
 
 export const fetchAvailableTimes = async (
-    serviceCenterId: number,
-    serviceId: number,
+    serviceCenterId: string,
+    serviceId: string,
     date: string
 ): Promise<{ time: string; isAvailable: boolean }[]> => {
     try {
         const formattedDate = reformatDate(date);
         const response = await axios.get(
-            `/api/QueueService.svc/json_pre_reg_https/GetTimeList?organisationGuid={${organizationGuid}}&serviceCenterId=${serviceCenterId}&serviceId=${serviceId}&date=${formattedDate}`
+            `/api/api/GetTimeList?organisationGuid={${organizationGuid}}&serviceCenterId=${serviceCenterId}&serviceId=${serviceId}&date=${formattedDate}`
         );
 
         const data = response.data;
 
-        if (data && Array.isArray(data.d)) {
-            return data.d.map((time: PreRegTime) => ({
-                time: parseTime(time.StartTime),
+        if (data && Array.isArray(data)) {
+            return data.map((time: PreRegTime) => ({
+                time: time.StartTime,
                 isAvailable: time.IsAllow === 1,
             }));
         } else {
@@ -66,20 +66,9 @@ export const fetchAvailableTimes = async (
 };
 
 export const formatDate = (datePart: string): string => {
-    const timestamp = parseInt(datePart.match(/\d+/)?.[0] || "0", 10);
-    const date = new Date(timestamp);
+    const date = new Date(datePart); // напряму створюємо об'єкт Date
 
     return date.toLocaleDateString("uk-UA", { day: "numeric", month: "long" });
-};
-
-export const parseTime = (isoTime: string): string => {
-    const match = isoTime.match(/PT(?:(\d+)H)?(?:(\d+)M)?/);
-    if (match) {
-        const hours = match[1] ? match[1].padStart(2, "0") : "00";
-        const minutes = match[2] ? match[2].padStart(2, "0") : "00";
-        return `${hours}:${minutes}`;
-    }
-    return "Invalid time";
 };
 
 export const reformatDate = (formattedDate: string): string => {
