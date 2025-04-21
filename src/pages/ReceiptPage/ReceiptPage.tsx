@@ -76,7 +76,7 @@ export const ReceiptPage: React.FC = () => {
         );
         problematicElements.forEach((el) => {
             const element = el as HTMLElement;
-            element.style.margin = "10px 0";
+            element.style.margin = "10px 0 ";
             element.style.display = "block";
             element.style.position = "static";
         });
@@ -204,7 +204,7 @@ export const ReceiptPage: React.FC = () => {
                             </h2>
                             <div
                                 id="receipt-content"
-                                className="receipt-container"
+                                className="flex justify-center items-center w-full mx-auto text-center"
                                 dangerouslySetInnerHTML={{
                                     __html: htmlReceipt,
                                 }}
