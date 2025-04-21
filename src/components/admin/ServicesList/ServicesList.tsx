@@ -88,7 +88,9 @@ export const ServiceList: React.FC = () => {
 
     const handleDeleteService = async (id: string) => {
         try {
-            await axios.delete(`/api/services/${id}`);
+            await axios.delete(
+                `https://equeue-server-production.up.railway.app/api/services/${id}`
+            );
             setServices((prev) => prev.filter((s) => s.id !== id));
         } catch (err) {
             console.error("Помилка видалення сервісу", err);
@@ -108,10 +110,13 @@ export const ServiceList: React.FC = () => {
         }
 
         try {
-            const res = await axios.post(`/api/services`, {
-                serviceCenterId: selectedCenterId,
-                description: newDescription.trim(),
-            });
+            const res = await axios.post(
+                `https://equeue-server-production.up.railway.app/api/services`,
+                {
+                    serviceCenterId: selectedCenterId,
+                    description: newDescription.trim(),
+                }
+            );
 
             const selectedCenter = centers.find(
                 (c) => c.ServiceCenterId === selectedCenterId

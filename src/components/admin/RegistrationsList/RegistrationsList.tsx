@@ -129,7 +129,9 @@ export const RegistrationsList: React.FC = () => {
 
     const handleDeleteRegistration = async (id: string) => {
         try {
-            await axios.delete(`/api/registrations/${id}`);
+            await axios.delete(
+                `https://equeue-server-production.up.railway.app/api/registrations/${id}`
+            );
             setRegistrations((prev) => prev.filter((r) => r.id !== id));
         } catch (err) {
             console.error("Помилка видалення реєстрації", err);
