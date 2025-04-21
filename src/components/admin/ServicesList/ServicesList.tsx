@@ -30,7 +30,7 @@ export const ServiceList: React.FC = () => {
         const fetchCenters = async () => {
             try {
                 const res = await axios.get(
-                    `/api/getServiceCenterList?organisationGuid={${organizationGuid}}`
+                    `https://equeue-server-production.up.railway.app/api/getServiceCenterList?organisationGuid={${organizationGuid}}`
                 );
                 setCenters(res.data);
             } catch {
@@ -48,7 +48,7 @@ export const ServiceList: React.FC = () => {
             setLoading(true);
             try {
                 const res = await axios.get<RawService[]>(
-                    `/api/GetServiceList?organisationGuid={${organizationGuid}}&serviceCenterId=${selectedCenterId}`
+                    `https://equeue-server-production.up.railway.app/api/GetServiceList?organisationGuid={${organizationGuid}}&serviceCenterId=${selectedCenterId}`
                 );
 
                 const selectedCenter = centers.find(
@@ -137,9 +137,12 @@ export const ServiceList: React.FC = () => {
 
     const handleUpdateService = async (id: string, newDescription: string) => {
         try {
-            await axios.put(`/api/services/${id}`, {
-                description: newDescription,
-            });
+            await axios.put(
+                `https://equeue-server-production.up.railway.app/api/services/${id}`,
+                {
+                    description: newDescription,
+                }
+            );
 
             setServices((prev) =>
                 prev.map((s) =>

@@ -32,7 +32,7 @@ export const ReceiptPage: React.FC = () => {
         try {
             axios
                 .get(
-                    `/api/GetReceipt?organisationGuid={${
+                    `https://equeue-server-production.up.railway.app/api/GetReceipt?organisationGuid={${
                         import.meta.env.VITE_ORGANIZATION_GUID
                     }}&serviceCenterId=${
                         selectedCenter?.ServiceCenterId

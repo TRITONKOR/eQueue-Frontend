@@ -36,7 +36,7 @@ export const RegistrationsList: React.FC = () => {
         const fetchCenters = async () => {
             try {
                 const res = await axios.get(
-                    `/api/getServiceCenterList?organisationGuid={${organizationGuid}}`
+                    `https://equeue-server-production.up.railway.app/api/getServiceCenterList?organisationGuid={${organizationGuid}}`
                 );
                 setCenters(res.data);
             } catch (err) {
@@ -52,7 +52,7 @@ export const RegistrationsList: React.FC = () => {
         const fetchServices = async () => {
             try {
                 const res = await axios.get<RawService[]>(
-                    `/api/GetServiceList?organisationGuid={${organizationGuid}}&serviceCenterId=${selectedCenterId}`
+                    `https://equeue-server-production.up.railway.app/api/GetServiceList?organisationGuid={${organizationGuid}}&serviceCenterId=${selectedCenterId}`
                 );
                 setServices(res.data);
             } catch (err) {
@@ -69,7 +69,7 @@ export const RegistrationsList: React.FC = () => {
             setLoading(true);
             try {
                 const res = await axios.get<RegistrationItemProps[]>(
-                    `/api/services/${selectedServiceId}/registrations`
+                    `https://equeue-server-production.up.railway.app/api/services/${selectedServiceId}/registrations`
                 );
                 setRegistrations(res.data);
             } catch (err) {
@@ -158,7 +158,7 @@ export const RegistrationsList: React.FC = () => {
                 registrationToSend
             ).toString();
             const res = await axios.post<RegistrationItemProps>(
-                `/api/RegCustomerEx?organisationGuid={${organizationGuid}}&serviceCenterId=${selectedCenterId}&${queryParams}`
+                `https://equeue-server-production.up.railway.app/api/RegCustomerEx?organisationGuid={${organizationGuid}}&serviceCenterId=${selectedCenterId}&${queryParams}`
             );
 
             setRegistrations((prev) => [...prev, res.data]);
@@ -197,7 +197,7 @@ export const RegistrationsList: React.FC = () => {
             };
 
             const res = await axios.put(
-                `/api/registrations/${id}`,
+                `https://equeue-server-production.up.railway.app/api/registrations/${id}`,
                 registrationToSend
             );
             setRegistrations((prev) =>

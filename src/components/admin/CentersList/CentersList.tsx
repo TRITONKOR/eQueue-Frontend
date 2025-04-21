@@ -21,7 +21,7 @@ export const CentersList: React.FC = () => {
             const organizationGuid = import.meta.env.VITE_ORGANIZATION_GUID;
             try {
                 const res = await axios.get(
-                    `/api/getServiceCenterList?organisationGuid={${organizationGuid}}`
+                    `https://equeue-server-production.up.railway.app/api/getServiceCenterList?organisationGuid={${organizationGuid}}`
                 );
                 setCenters(res.data);
             } catch (err: any) {
@@ -63,7 +63,9 @@ export const CentersList: React.FC = () => {
 
     const handleDeleteCenter = async (id: string) => {
         try {
-            await axios.delete(`/api/service-centers/${id}`);
+            await axios.delete(
+                `https://equeue-server-production.up.railway.app/api/service-centers/${id}`
+            );
             setCenters((prev) => prev.filter((c) => c.ServiceCenterId !== id));
         } catch (err) {
             console.error("Помилка видалення центру", err);
@@ -80,7 +82,10 @@ export const CentersList: React.FC = () => {
         };
 
         try {
-            const res = await axios.post("/api/service-centers", newCenter);
+            const res = await axios.post(
+                "https://equeue-server-production.up.railway.app/api/service-centers",
+                newCenter
+            );
 
             const formattedCenter: CenterItemProps = {
                 ServiceCenterId: res.data.id,
@@ -108,11 +113,14 @@ export const CentersList: React.FC = () => {
         isActive: boolean;
     }) => {
         try {
-            await axios.put(`/api/service-centers/${updated.id}`, {
-                name: updated.name,
-                location: updated.location,
-                isActive: updated.isActive,
-            });
+            await axios.put(
+                `https://equeue-server-production.up.railway.app/api/service-centers/${updated.id}`,
+                {
+                    name: updated.name,
+                    location: updated.location,
+                    isActive: updated.isActive,
+                }
+            );
 
             setCenters((prev) =>
                 prev.map((c) =>

@@ -94,7 +94,7 @@ export const RegistrationPage: React.FC = () => {
 
         axios
             .post(
-                `/api/RegCustomerEx?organisationGuid={${organizationGuid}}&serviceCenterId=${
+                `https://equeue-server-production.up.railway.app/api/RegCustomerEx?organisationGuid={${organizationGuid}}&serviceCenterId=${
                     selectedCenter?.ServiceCenterId
                 }&serviceId=${selectedService?.ServiceId}&phone=${
                     userProfile.phone

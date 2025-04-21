@@ -18,7 +18,7 @@ export const fetchAvailableDates = async (
 ): Promise<string[]> => {
     try {
         const response = await axios.get(
-            `/api/GetDayList?organisationGuid={${organizationGuid}}&serviceCenterId=${serviceCenterId}&serviceId=${serviceId}`
+            `https://equeue-server-production.up.railway.app/api/GetDayList?organisationGuid={${organizationGuid}}&serviceCenterId=${serviceCenterId}&serviceId=${serviceId}`
         );
 
         const data = response.data;
@@ -45,7 +45,7 @@ export const fetchAvailableTimes = async (
     try {
         const formattedDate = reformatDate(date);
         const response = await axios.get(
-            `/api/GetTimeList?organisationGuid={${organizationGuid}}&serviceCenterId=${serviceCenterId}&serviceId=${serviceId}&date=${formattedDate}`
+            `https://equeue-server-production.up.railway.app/api/GetTimeList?organisationGuid={${organizationGuid}}&serviceCenterId=${serviceCenterId}&serviceId=${serviceId}&date=${formattedDate}`
         );
 
         const data = response.data;

@@ -57,7 +57,7 @@ export const ServicesPage: React.FC = () => {
         setLoading(true);
         try {
             const response = await axios.get(
-                `/api/GetServiceList?organisationGuid={${organizationGuid}}&serviceCenterId=${selectedCenter?.ServiceCenterId}`
+                `https://equeue-server-production.up.railway.app/api/GetServiceList?organisationGuid={${organizationGuid}}&serviceCenterId=${selectedCenter?.ServiceCenterId}`
             );
 
             const data = response.data;
