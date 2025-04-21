@@ -15,14 +15,17 @@ const AdminAuthPage: React.FC = () => {
 
     const handleLogin = async () => {
         try {
-            await axios.post("/api/login", {
-                login,
-                password,
-            });
+            await axios.post(
+                "https://equeue-server-production.up.railway.app/api/login",
+                {
+                    login,
+                    password,
+                }
+            );
             loginAsAdmin();
             navigate("/admin");
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (err) {
+            console.error("Login error:", err);
             setError("Невірний логін або пароль");
         }
     };

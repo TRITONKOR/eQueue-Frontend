@@ -5,7 +5,7 @@ import { defineConfig } from "vite";
 dotenv.config();
 
 export default defineConfig(() => {
-    const url = process.env.VITE_API_URL;
+    console.log("URL from .env:", process.env.VITE_API_URL);
 
     return {
         plugins: [react()],
@@ -17,8 +17,9 @@ export default defineConfig(() => {
             },
             proxy: {
                 "/api": {
-                    target: url,
+                    target: "https://equeue-server-production.up.railway.app/api", // ← без /api в кінці
                     changeOrigin: true,
+                    rewrite: (path) => path.replace(/^\/api/, ""), // Додатково: прибрати /api з шляху
                 },
             },
         },

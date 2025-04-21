@@ -1,0 +1,55 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+html, body, #root {
+  width: 100dvw;
+  min-height: 100dvh;
+  padding: 0;
+  margin: 0;
+  overflow-x: hidden;
+}
+
+#root {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-primary {
+  @apply mt-6 text-xl py-8 px-6 text-white rounded-full shadow-md hover:shadow-xl transition duration-300;
+}
+
+.h1-primary {
+  @apply mb-5 text-2xl font-extrabold text-center text-blue-600 sm:text-3xl;
+}
+
+.container-primary {
+  @apply container flex flex-col items-center justify-center p-6 w-full max-w-full min-h-screen sm:mx-32 sm:my-auto;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-text-fill-color: black !important;
+  background-color: transparent !important;
+  -webkit-transition: background-color 5000s ease-in-out 0s;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+.form-input__wrapper {
+  border: 1px solid #d1d5db;
+  transition: all 0.2s ease;
+}
+.form-input__field {
+  font-size: 1.125rem;
+  width: 100%;
+}
+.form-input__field::-moz-placeholder {
+  color: #9ca3af;
+}
+.form-input__field::placeholder {
+  color: #9ca3af;
+}
+.form-input__field:focus {
+  outline: none;
+}/*# sourceMappingURL=index.css.map */
